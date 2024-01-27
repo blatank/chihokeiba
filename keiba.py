@@ -9,8 +9,14 @@ soup = BeautifulSoup(res.text, "html.parser")
 names = soup.find_all("a", class_="horseName")
 races = soup.find_all("div", class_="raceInfo")
 card = soup.find_all("section", class_="cardTable")
+tokei = soup.select("tbody > tr")
 # races = soup.find_all("div", class_="cardTable raceInfo")
-tokei = re.findall(r'\d:\d\d\.\d　', str(card))
+
+# t1 = re.sub(r'\n','',str(tokei[5]))
+t2 = re.split(r'</td>',str(tokei[5]))
+tokei2 = re.findall(r'\d:\d\d\.\d', t2[2])
+print(tokei2)
+#時計の取り出し方法検討中
 
 bamei = []
 keibajou = []
@@ -26,10 +32,10 @@ for horse in names:
   kyori.append([])
   baba.append([])
 
-a = 0
-for t in tokei:
-  time[int(a / 5)].append(t.replace('　', ''))
-  a = a + 1
+# a = 0
+# for t in tokei:
+#   time[int(a / 5)].append(t.replace('　', ''))
+#   a = a + 1
 
 # b = 0
 # for race in races:
@@ -43,9 +49,9 @@ for t in tokei:
 #     baba[int(b / 5)].append(ba[1])
 #   b = b + 1
 
-print(bamei)
+# print(bamei)
 # print(keibajou)
 # print(kyori)
 # print(baba)
-print(time)
+# print(time)
 # print(len(races))
