@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 
 import requests
 import re
-url = "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_raceDate=2024%2f02%2f03&k_raceNo=1&k_babaCode=32"
+url = "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_raceDate=2024%2f03%2f10&k_raceNo=7&k_babaCode=31"
 res = requests.get(url)
 soup = BeautifulSoup(res.text, "html.parser")
 
@@ -56,8 +56,28 @@ for i in range(len(names)):
     keibajou[i].append(place)
     kyori[i].append(dis)
 
-print(kyori)
-  
+#条件検索(競馬場検索)
+search_places = ["高知","高知"]
+search_distances = ["右1400","右1300"]
+for k in range(len(search_places)):
+  top_time = []
+  search_place = search_places[k]
+  search_distance = search_distances[k]
+  print("-----------------------------")
+  print(search_place + " " + search_distance)
+  for i in range(len(names)):
+    moti = ""
+    for j in range(5):
+      if keibajou[i][j] == search_place and kyori[i][j] == search_distance:
+        if moti == "" or moti > time[i][j]:
+          moti = time[i][j] + "-" + str(i+1)
+        # print(keibajou[i][j] + kyori[i][j] + " : " + time[i][j])
+    top_time.append(moti)
+  top_time.sort()
+  for s in top_time:
+    if s != "":
+      s2 = re.split(r'-', s)
+      print(s2[1] + "番" + bamei[int(s2[1]) - 1] +"：" + s2[0])
 
   # for j in range(5):
   #   tokei2 = re.findall(r'\d:\d\d\.\d', t2[2+j])
