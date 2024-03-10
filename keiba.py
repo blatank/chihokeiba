@@ -2,21 +2,15 @@ from bs4 import BeautifulSoup
 
 import requests
 import re
-url = "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_raceDate=2024%2f01%2f27&k_raceNo=10&k_babaCode=32"
+url = "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_raceDate=2024%2f02%2f03&k_raceNo=1&k_babaCode=32"
 res = requests.get(url)
 soup = BeautifulSoup(res.text, "html.parser")
 
 names = soup.find_all("a", class_="horseName")
 races = soup.find_all("div", class_="raceInfo")
 card = soup.find_all("section", class_="cardTable")
-tokei = soup.select("tbody > tr")
-# races = soup.find_all("div", class_="cardTable raceInfo")
+tokei = soup.select("tbody > tr")#名前変更予定
 
-# t1 = re.sub(r'\n','',str(tokei[5]))
-t2 = re.split(r'</td>',str(tokei[5]))
-tokei2 = re.findall(r'\d:\d\d\.\d', t2[2])
-print(tokei2)
-#時計の取り出し方法検討中
 
 bamei = []
 keibajou = []
@@ -24,13 +18,53 @@ kyori = []
 baba = []
 time = []
 
+#馬名取り出し処理
 for horse in names:
-  # print(horse.get_text())
-  bamei.append(horse.get_text())
-  time.append([])
-  keibajou.append([])
-  kyori.append([])
+  bamei.append(horse.get_text())#OK
+  time.append([])#OK
+  keibajou.append([])#OK
+  kyori.append([])#OK
   baba.append([])
+
+#走破時計取り出し処理
+for i in range(len(names)):
+  t2 = re.split(r'</td>',str(tokei[i * 5 + 5]))
+  for j in range(5):
+    tokei2 = re.findall(r'\d:\d\d\.\d', t2[2+j])
+    if len(tokei2) > 0:
+      time[i].append(tokei2[0])
+    else:
+      time[i].append("")
+
+#競馬場取り出し処理
+for i in range(len(names)):
+  for j in range(5):
+    k2 = re.split(r'<br/>', str(races[i * 5 +j]))
+    if len(k2) > 1:
+      keibajou2 = re.findall(r'\w+　\w+　\w+', k2[1])
+      if len(keibajou2) > 0:
+        keibajou3 = re.split(r'　', keibajou2[0])
+        place = keibajou3[0]
+        dis = keibajou3[1]
+      else:
+        place = ""
+        dis = ""
+    else:
+        place = ""
+        dis = ""
+
+    keibajou[i].append(place)
+    kyori[i].append(dis)
+
+print(kyori)
+  
+
+  # for j in range(5):
+  #   tokei2 = re.findall(r'\d:\d\d\.\d', t2[2+j])
+  #   if len(tokei2) > 0:
+  #     time[i].append(tokei2[0])
+  #   else:
+  #     time[i].append("")
 
 # a = 0
 # for t in tokei:
