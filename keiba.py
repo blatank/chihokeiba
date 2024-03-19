@@ -72,8 +72,9 @@ class Keiba:
         self.__keibajou[i].append(place)
         self.__kyori[i].append(dis)
 
+  # 時計順で出力
   def outputHourseTime(self):
-    #条件検索
+    # 設定した条件の分だけ検索して出力
     for i in range(len(self.__courses)):
       for j in range(len(self.__distances)):
         print("-----------------------------")
@@ -83,17 +84,28 @@ class Keiba:
   
   def print_sorted_data(self, course, distance):
     top_time = []
+
+    # 該当データ検索
     for i in range(len(self.__names)):
       moti = ""
+
+      # 過去5走から検索する
       for j in range(5):
         if self.__keibajou[i][j] == course and self.__kyori[i][j] == distance:
           if moti == "" or moti > self.__time[i][j]:
-            moti = self.__time[i][j] + "-" + str(i+1)
-          # print(self.__keibajou[i][j] + self.__kyori[i][j] + " : " + self.__time[i][j])
+            # 除外・取消を除く
+            if self.__time[i][j] != "":
+              # 持ち時計-馬番の形で一時保存
+              moti = self.__time[i][j] + "-" + str(i+1)
+      
+      # その馬の最速タイムとして登録
       top_time.append(moti)
+    
+    # ソートして出力する
     top_time.sort()
     for s in top_time:
       if s != "":
+        # 持ちタイムと馬番を分離して、馬番を前に出して出力
         s2 = re.split(r'-', s)
         print(s2[1] + "番" + self.__bamei[int(s2[1]) - 1] +"：" + s2[0])
 
