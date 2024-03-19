@@ -2,110 +2,105 @@ from bs4 import BeautifulSoup
 
 import requests
 import re
-url = "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_raceDate=2024%2f03%2f10&k_raceNo=7&k_babaCode=31"
-res = requests.get(url)
-soup = BeautifulSoup(res.text, "html.parser")
+import sys
 
-names = soup.find_all("a", class_="horseName")
-races = soup.find_all("div", class_="raceInfo")
-card = soup.find_all("section", class_="cardTable")
-tokei = soup.select("tbody > tr")#名前変更予定
+class Keiba:
+  def __init__(self, url):
+    self.__url = url
+    self.__courses = []
+    self.__distances = []
 
+    self.analyze()
+  
+  def setcourse(self, course):
+    self.__courses.append(course)
 
-bamei = []
-keibajou = []
-kyori = []
-baba = []
-time = []
+  def setDistance(self, distance):
+    self.__distances.append(distance)
 
-#馬名取り出し処理
-for horse in names:
-  bamei.append(horse.get_text())#OK
-  time.append([])#OK
-  keibajou.append([])#OK
-  kyori.append([])#OK
-  baba.append([])
+  def analyze(self):
 
-#走破時計取り出し処理
-for i in range(len(names)):
-  t2 = re.split(r'</td>',str(tokei[i * 5 + 5]))
-  for j in range(5):
-    tokei2 = re.findall(r'\d:\d\d\.\d', t2[2+j])
-    if len(tokei2) > 0:
-      time[i].append(tokei2[0])
-    else:
-      time[i].append("")
+    res = requests.get(self.__url)
+    soup = BeautifulSoup(res.text, "html.parser")
 
-#競馬場取り出し処理
-for i in range(len(names)):
-  for j in range(5):
-    k2 = re.split(r'<br/>', str(races[i * 5 +j]))
-    if len(k2) > 1:
-      keibajou2 = re.findall(r'\w+　\w+　\w+', k2[1])
-      if len(keibajou2) > 0:
-        keibajou3 = re.split(r'　', keibajou2[0])
-        place = keibajou3[0]
-        dis = keibajou3[1]
-      else:
-        place = ""
-        dis = ""
-    else:
-        place = ""
-        dis = ""
+    self.__names = soup.find_all("a", class_="horseName")
+    self.__races = soup.find_all("div", class_="raceInfo")
+    self.__card = soup.find_all("section", class_="cardTable")
+    self.__tokei = soup.select("tbody > tr")#名前変更予定
 
-    keibajou[i].append(place)
-    kyori[i].append(dis)
+    self.__bamei = []
+    self.__keibajou = []
+    self.__kyori = []
+    self.__baba = []
+    self.__time = []
 
-#条件検索(競馬場検索)
-search_places = ["高知","高知"]
-search_distances = ["右1400","右1300"]
-for k in range(len(search_places)):
-  top_time = []
-  search_place = search_places[k]
-  search_distance = search_distances[k]
-  print("-----------------------------")
-  print(search_place + " " + search_distance)
-  for i in range(len(names)):
-    moti = ""
-    for j in range(5):
-      if keibajou[i][j] == search_place and kyori[i][j] == search_distance:
-        if moti == "" or moti > time[i][j]:
-          moti = time[i][j] + "-" + str(i+1)
-        # print(keibajou[i][j] + kyori[i][j] + " : " + time[i][j])
-    top_time.append(moti)
-  top_time.sort()
-  for s in top_time:
-    if s != "":
-      s2 = re.split(r'-', s)
-      print(s2[1] + "番" + bamei[int(s2[1]) - 1] +"：" + s2[0])
+    #馬名取り出し処理
+    for horse in self.__names:
+      self.__bamei.append(horse.get_text())#OK
+      self.__time.append([])#OK
+      self.__keibajou.append([])#OK
+      self.__kyori.append([])#OK
+      self.__baba.append([])
 
-  # for j in range(5):
-  #   tokei2 = re.findall(r'\d:\d\d\.\d', t2[2+j])
-  #   if len(tokei2) > 0:
-  #     time[i].append(tokei2[0])
-  #   else:
-  #     time[i].append("")
+    #走破時計取り出し処理
+    for i in range(len(self.__names)):
+      t2 = re.split(r'</td>',str(self.__tokei[i * 5 + 5]))
+      for j in range(5):
+        tokei2 = re.findall(r'\d:\d\d\.\d', t2[2+j])
+        if len(tokei2) > 0:
+          self.__time[i].append(tokei2[0])
+        else:
+          self.__time[i].append("")
 
-# a = 0
-# for t in tokei:
-#   time[int(a / 5)].append(t.replace('　', ''))
-#   a = a + 1
+    #競馬場取り出し処理
+    for i in range(len(self.__names)):
+      for j in range(5):
+        k2 = re.split(r'<br/>', str(self.__races[i * 5 +j]))
+        if len(k2) > 1:
+          keibajou2 = re.findall(r'\w+　\w+　\w+', k2[1])
+          if len(keibajou2) > 0:
+            keibajou3 = re.split(r'　', keibajou2[0])
+            place = keibajou3[0]
+            dis = keibajou3[1]
+          else:
+            place = ""
+            dis = ""
+        else:
+            place = ""
+            dis = ""
 
-# b = 0
-# for race in races:
-#   # t = race.get_text()
-#   r = re.split(r'<br\/*>',str(race))
-#   racename = re.split(r'　',r[1])
-#   ba = re.split(r'　',r[0]) 
-#   if len(racename) > 1:
-#     keibajou[int(b / 5)].append(racename[0])
-#     kyori[int(b / 5)].append(racename[1])
-#     baba[int(b / 5)].append(ba[1])
-#   b = b + 1
+        self.__keibajou[i].append(place)
+        self.__kyori[i].append(dis)
 
-# print(bamei)
-# print(keibajou)
-# print(kyori)
-# print(baba)
-# print(time)
-# print(len(races))
+  def outputHourseTime(self):
+    #条件検索
+    for i in range(len(self.__courses)):
+      for j in range(len(self.__distances)):
+        print("-----------------------------")
+        print(self.__courses[i] + " " + self.__distances[j])
+
+        self.print_sorted_data(self.__courses[i], self.__distances[j])
+  
+  def print_sorted_data(self, course, distance):
+    top_time = []
+    for i in range(len(self.__names)):
+      moti = ""
+      for j in range(5):
+        if self.__keibajou[i][j] == course and self.__kyori[i][j] == distance:
+          if moti == "" or moti > self.__time[i][j]:
+            moti = self.__time[i][j] + "-" + str(i+1)
+          # print(self.__keibajou[i][j] + self.__kyori[i][j] + " : " + self.__time[i][j])
+      top_time.append(moti)
+    top_time.sort()
+    for s in top_time:
+      if s != "":
+        s2 = re.split(r'-', s)
+        print(s2[1] + "番" + self.__bamei[int(s2[1]) - 1] +"：" + s2[0])
+
+# test(あとで別ファイルにする)
+race = Keiba(sys.argv[1])
+race.setcourse("高知")
+race.setDistance("右1400")
+race.setDistance("右1300")
+race.setDistance("右1600")
+race.outputHourseTime()
