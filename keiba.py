@@ -12,12 +12,16 @@ class Keiba:
 
     self.analyze()
   
+  # データ抽出に使いたい競馬場をセットする
   def setcourse(self, course):
     self.__courses.append(course)
 
+  # データ抽出に使いたい距離を定義する
+  # 例)右1400
   def setDistance(self, distance):
     self.__distances.append(distance)
 
+  # URL解析
   def analyze(self):
 
     res = requests.get(self.__url)
@@ -82,6 +86,7 @@ class Keiba:
 
         self.print_sorted_data(self.__courses[i], self.__distances[j])
   
+  # 条件内をソートして出力
   def print_sorted_data(self, course, distance):
     top_time = []
 
