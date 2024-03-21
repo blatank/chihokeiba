@@ -12,8 +12,6 @@ class Race:
     self.__courses = []
     self.__distances = []
     self.__horses = []
-
-    self.analyze()
   
   # データ抽出に使いたい競馬場をセットする
   def setcourse(self, course):
@@ -31,6 +29,9 @@ class Race:
     soup = BeautifulSoup(res.text, "html.parser")
 
     self.__names = soup.find_all("a", class_="horseName")
+    if len(self.__names) == 0:
+      return False
+
     self.__races = soup.find_all("div", class_="raceInfo")
     self.__card = soup.find_all("section", class_="cardTable")
     self.__tokei = soup.select("tbody > tr")#名前変更予定
@@ -85,6 +86,9 @@ class Race:
         # self.__keibajou[i].append(place)
         # self.__kyori[i].append(dis)
         self.__horses[i].addHistory(place, dis, time[i][j])
+    
+    # ここまで来れば正常終了
+    return True
 
   # 時計順で出力
   def outputHourseTime(self):

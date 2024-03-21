@@ -3,6 +3,7 @@ import sys
 
 # argv[1]:URL
 race = Race(sys.argv[1])
+race.analyze()
 
 # 検索したい条件を設定
 race.setcourse("高知")
