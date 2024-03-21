@@ -14,7 +14,7 @@ class Race:
     self.__horses = []
   
   # データ抽出に使いたい競馬場をセットする
-  def setcourse(self, course):
+  def setCourse(self, course):
     self.__courses.append(course)
 
   # データ抽出に使いたい距離を定義する
@@ -23,7 +23,7 @@ class Race:
     self.__distances.append(distance)
 
   # URL解析
-  def analyze(self):
+  def analyzeUrl(self):
 
     res = requests.get(self.__url)
     soup = BeautifulSoup(res.text, "html.parser")
@@ -98,10 +98,10 @@ class Race:
         print("-----------------------------")
         print(self.__courses[i] + " " + self.__distances[j])
 
-        self.print_sorted_data(self.__courses[i], self.__distances[j])
+        self.printSortedData(self.__courses[i], self.__distances[j])
   
   # 条件内をソートして出力
-  def print_sorted_data(self, course, distance):
+  def printSortedData(self, course, distance):
     top_time = []
 
     # 該当データ検索

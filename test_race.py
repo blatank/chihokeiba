@@ -9,8 +9,8 @@ class TestRace(unittest.TestCase):
   def test_race(self):
     # 正しいURLを与えた場合
     race = Race(test_url)
-    self.assertTrue(race.analyze())
+    self.assertTrue(race.analyzeUrl())
 
     # 正しくないURLを与えた場合
     race = Race(invalid_url)
-    self.assertFalse(race.analyze())
+    self.assertFalse(race.analyzeUrl())
