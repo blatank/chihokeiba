@@ -4,6 +4,9 @@ import requests
 import re
 import sys
 
+from horse import Horse
+from history import History
+
 class Keiba:
   def __init__(self, url):
     self.__url = url
@@ -119,46 +122,7 @@ class Keiba:
         h = self.__horses[int(splited_str[1]) - 1]
         print(splited_str[1] + "番" + h.getName() +"：" + splited_str[0])
 
-class Horse:
-  def __init__(self, name, no):
-    self.__name = name
-    self.__no = no
-    self.__histories = []
 
-  def getName(self):
-    return self.__name
-  
-  def getNo(self):
-    return self.__no
-
-  def addHistory(self, course, distance, time):
-    self.__histories.append(History(course, distance, time))
-
-  def getTopTime(self, course, distance):
-    time = ""
-    for history in self.__histories:
-      if (history.hasHistory(course, distance)):
-        t = history.getTime()
-
-        if time == "" or time > t:
-          time = t
-
-    return time
-
-class History:
-  def __init__(self, course, distance, time):
-    self.__course = course
-    self.__distance = distance
-    self.__time = time
-
-  def getTime(self):
-    return self.__time
-  
-  def hasHistory(self, course, distance):
-    if (self.__course == course and self.__distance == distance):
-      return True
-    else:
-      return False
   
 
 # test(あとで別ファイルにする)
