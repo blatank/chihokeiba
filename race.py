@@ -28,18 +28,28 @@ class Race:
     res = requests.get(self.__url)
     soup = BeautifulSoup(res.text, "html.parser")
 
+    # 馬名の抽出
     names = soup.find_all("a", class_="horseName")
+
+    # 抽出がうまく行かなかった場合はURLが間違っていると思われる
     if len(names) == 0:
       return False
+    
+    # TODO：このレースの施行条件取得する
 
+    # 過去のレース情報取得(競馬場・距離用)
     races = soup.find_all("div", class_="raceInfo")
-    times = soup.select("tbody > tr")
 
+    # 過去のレース情報取得(時計用)
+    history_table = soup.select("tbody > tr")
+
+    # 走破時計保存用一時配列初期化(二次元配列で使用)
     time = []
 
     #馬名取り出し処理
     no = 1
     for horse in names:
+      # 馬名・馬番取得とともにHorseインスタンス追加
       self.__horses.append(Horse(horse.get_text(), no))
       no += 1
       time.append([])
@@ -47,7 +57,7 @@ class Race:
     #走破時計取り出し処理
     for i in range(len(self.__horses)):
       # TODO:何を目的としているかコメントに残す
-      t2 = re.split(r'</td>',str(times[i * 5 + 5]))
+      t2 = re.split(r'</td>',str(history_table[i * 5 + 5]))
 
       # 馬柱に載っているのは過去5走
       # そのデータを分解し、Horseにセットする
