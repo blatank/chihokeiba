@@ -28,24 +28,18 @@ class Race:
     res = requests.get(self.__url)
     soup = BeautifulSoup(res.text, "html.parser")
 
-    self.__names = soup.find_all("a", class_="horseName")
-    if len(self.__names) == 0:
+    names = soup.find_all("a", class_="horseName")
+    if len(names) == 0:
       return False
 
-    self.__races = soup.find_all("div", class_="raceInfo")
-    self.__card = soup.find_all("section", class_="cardTable")
-    self.__tokei = soup.select("tbody > tr")#名前変更予定
+    races = soup.find_all("div", class_="raceInfo")
+    times = soup.select("tbody > tr")
 
-    names = []
     time = []
-    # self.__keibajou = []
-    # self.__kyori = []
-    # self.__baba = []
-    # self.__time = []
 
     #馬名取り出し処理
     no = 1
-    for horse in self.__names:
+    for horse in names:
       self.__horses.append(Horse(horse.get_text(), no))
       no += 1
       time.append([])
@@ -53,7 +47,7 @@ class Race:
     #走破時計取り出し処理
     for i in range(len(self.__horses)):
       # TODO:何を目的としているかコメントに残す
-      t2 = re.split(r'</td>',str(self.__tokei[i * 5 + 5]))
+      t2 = re.split(r'</td>',str(times[i * 5 + 5]))
 
       # 馬柱に載っているのは過去5走
       # そのデータを分解し、Horseにセットする
@@ -69,7 +63,7 @@ class Race:
     #競馬場取り出し処理
     for i in range(len(self.__horses)):
       for j in range(5):
-        k2 = re.split(r'<br/>', str(self.__races[i * 5 +j]))
+        k2 = re.split(r'<br/>', str(races[i * 5 +j]))
         if len(k2) > 1:
           keibajou2 = re.findall(r'\w+　\w+　\w+', k2[1])
           if len(keibajou2) > 0:
