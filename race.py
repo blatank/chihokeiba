@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 
 import requests
 import re
+from urllib.parse import urlparse
 
 from horse import Horse
 from history import History
@@ -12,6 +13,9 @@ class Race:
     self.__courses = []
     self.__distances = []
     self.__horses = []
+    self.__raceCourse = ""
+    self.__raceDistance = ""
+    self.__reaceNo = ""
   
   # データ抽出に使いたい競馬場をセットする
   def setCourse(self, course):
@@ -22,6 +26,15 @@ class Race:
   def setDistance(self, distance):
     self.__distances.append(distance)
 
+  def getRaceDistance(self):
+    return self.__raceDistance
+  
+  def getRaceCourse(self):
+    return self.__raceCourse
+  
+  def getRaceNo(self):
+    return self.__reaceNo
+
   # URL解析
   def analyzeUrl(self):
 
@@ -30,6 +43,36 @@ class Race:
 
     # 馬名の抽出
     names = soup.find_all("a", class_="horseName")
+
+    # レース施行条件の抽出
+    # ul.dataAreaのliを抽出し、その中を全角スペース→ｍで分割すると距離と回りが取り出せる
+    dataArea = soup.select("ul.dataArea > li")
+    # 全角スペースで分割した2番目が取り出したいもの
+    # 1番目はダート。盛岡の芝が解析したくなったら考える
+    zenkaku_splitted = re.split(r'　',str(dataArea[0]))
+
+    # race_info[0]：距離
+    # race_info[1]：（右）or（左）
+    race_info = re.split(r'ｍ',zenkaku_splitted[1])
+    if race_info[1] == "（右）":
+      self.__raceDistance = "右" + race_info[0]
+    else:
+      self.__raceDistance = "左" + race_info[0]
+
+    # URL自体からレース情報の解析
+    url = urlparse(self.__url)
+    query = re.split(r'&',url.query)
+    for q in query:
+      jouhou = re.split(r'=',q)
+
+      # k_babaCode=32は佐賀
+      # TODO：調査用のクラスを作る
+      if jouhou[0] == "k_babaCode" and jouhou[1] == "32":
+        self.__raceCourse = "佐賀"
+      
+      # k_raceNoはレースNo.
+      if jouhou[0] == "k_raceNo":
+        self.__reaceNo = jouhou[1]
 
     # 抽出がうまく行かなかった場合はURLが間違っていると思われる
     if len(names) == 0:
@@ -96,6 +139,9 @@ class Race:
 
   # 時計順で出力
   def outputHourseTime(self):
+    # 今はダート決め打ち
+    print(self.getRaceCourse() + self.getRaceNo() + "R" + " ダート" + self.getRaceDistance() + "m")
+
     # 設定した条件の分だけ検索して出力
     for i in range(len(self.__courses)):
       for j in range(len(self.__distances)):
