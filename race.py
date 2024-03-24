@@ -43,6 +43,10 @@ class Race:
 
     # 馬名の抽出
     names = soup.find_all("a", class_="horseName")
+    
+    # 抽出がうまく行かなかった場合はURLが間違っていると思われる
+    if len(names) == 0:
+      return False
 
     # レース施行条件の抽出
     # ul.dataAreaのliを抽出し、その中を全角スペース→ｍで分割すると距離と回りが取り出せる
@@ -73,10 +77,6 @@ class Race:
       # k_raceNoはレースNo.
       if jouhou[0] == "k_raceNo":
         self.__reaceNo = jouhou[1]
-
-    # 抽出がうまく行かなかった場合はURLが間違っていると思われる
-    if len(names) == 0:
-      return False
     
     # TODO：このレースの施行条件取得する
 
