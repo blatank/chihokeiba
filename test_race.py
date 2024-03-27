@@ -6,6 +6,10 @@ from racecourse import RaceCourse
 test_url = "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_raceDate=2024%2f03%2f13&k_raceNo=12&k_babaCode=24"
 invalid_url = "https://blatan.info/"
 
+saga1300 = RaceCourse("佐賀", "右1300")
+saga1400 = RaceCourse("佐賀", "右1400")
+kouchi1400 = RaceCourse("高知", "右1400")
+
 class TestRace(unittest.TestCase):
 
   def test_race(self):
@@ -19,19 +23,22 @@ class TestRace(unittest.TestCase):
 
   def test_history(self):
     # 適当に戦績を追加
-    history = History("佐賀", "右1400", "1:30:0")
+    history = History(saga1400, "1:30:0")
 
     # 問合せテスト
-    self.assertTrue(history.hasHistory("佐賀", "右1400"))
-    self.assertFalse(history.hasHistory("高知", "右1400"))
-    self.assertFalse(history.hasHistory("佐賀", "右1300"))
+    self.assertTrue(history.hasHistory(saga1400))
+    self.assertFalse(history.hasHistory(kouchi1400))
+    self.assertFalse(history.hasHistory(saga1300))
+
+  def test_raceouse(self):
+    # レース条件比較
+    self.assertTrue(saga1400.equal(RaceCourse("佐賀", "右1400")))
+    self.assertFalse(saga1400.equal(kouchi1400))
+    self.assertFalse(saga1400.equal(saga1300))
 
   def test_estimate_distance(self):
-    # 佐賀1400mのレースを設定
-    saga = RaceCourse("佐賀", "右1400")
-
     # 近い距離のデータを取得
-    eCourse = saga.esitimateCourse()
+    eCourse = saga1400.esitimateCourse()
 
     # 近い距離は1つ
     self.assertEqual(1, len(eCourse))
@@ -41,10 +48,10 @@ class TestRace(unittest.TestCase):
     self.assertEqual("右1300", eCourse[0].getDistance())
 
     # あり合えないデータを設定
-    saga = RaceCourse("佐賀", "右3200")
+    saga3200 = RaceCourse("佐賀", "右3200")
 
     # 近い距離のデータを取得
-    eCourse = saga.esitimateCourse()
+    eCourse = saga3200.esitimateCourse()
 
     # 近い距離のデータ無し
     self.assertEqual(0, len(eCourse))

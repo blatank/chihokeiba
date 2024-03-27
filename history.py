@@ -1,14 +1,15 @@
+from racecourse import RaceCourse
+
 class History:
-  def __init__(self, course, distance, time):
-    self.__course = course
-    self.__distance = distance
+  def __init__(self, racecourse, time):
+    self.__racecourse = racecourse
     self.__time = time
 
   def getTime(self):
     return self.__time
   
-  def hasHistory(self, course, distance):
-    if (self.__course == course and self.__distance == distance):
+  def hasHistory(self, racecouse):
+    if (self.__racecourse.equal(racecouse)):
       return True
     else:
       return False

@@ -6,6 +6,7 @@ from urllib.parse import urlparse
 
 from horse import Horse
 from history import History
+from racecourse import RaceCourse
 
 class Race:
   def __init__(self, url):
@@ -132,7 +133,7 @@ class Race:
 
         # self.__keibajou[i].append(place)
         # self.__kyori[i].append(dis)
-        self.__horses[i].addHistory(place, dis, time[i][j])
+        self.__horses[i].addHistory(RaceCourse(place, dis), time[i][j])
     
     # ここまで来れば正常終了
     return True

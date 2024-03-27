@@ -1,4 +1,5 @@
 from history import History
+from racecourse import RaceCourse
 
 class Horse:
   def __init__(self, name, no):
@@ -12,13 +13,13 @@ class Horse:
   def getNo(self):
     return self.__no
 
-  def addHistory(self, course, distance, time):
-    self.__histories.append(History(course, distance, time))
+  def addHistory(self, racecourse, time):
+    self.__histories.append(History(racecourse, time))
 
-  def getTopTime(self, course, distance):
+  def getTopTime(self, racecourse):
     time = ""
     for history in self.__histories:
-      if (history.hasHistory(course, distance)):
+      if (history.hasHistory(racecourse)):
         t = history.getTime()
 
         if time == "" or time > t:
