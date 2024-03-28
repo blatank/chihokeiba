@@ -3,7 +3,7 @@ from race import Race
 from history import History
 from racecourse import RaceCourse
 
-test_url = "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_raceDate=2024%2f03%2f13&k_raceNo=12&k_babaCode=24"
+test_url = "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_raceDate=2024%2f03%2f10&k_raceNo=10&k_babaCode=32"
 invalid_url = "https://blatan.info/"
 
 saga1300 = RaceCourse("佐賀", "右1300")
@@ -11,6 +11,20 @@ saga1400 = RaceCourse("佐賀", "右1400")
 kouchi1400 = RaceCourse("高知", "右1400")
 
 class TestRace(unittest.TestCase):
+
+  # 解析機能を含めたテスト
+  def test_integration(self):
+    # 解析するレースをセット
+    # 24/03/10 佐賀10R 右1400
+    race = Race(test_url)
+
+    # 参考にしたいレース条件①レースと同条件
+    thisConditionData = race.analyzeThisCondition()
+    self.assertTrue(len(thisConditionData) > 0)
+
+    # 参考にしたいレース条件②レースに近い条件
+    nearlyConditionData = race.analyzeNearlyCondition()
+    self.assertTrue(len(thisConditionData) > 0)   
 
   def test_race(self):
     # 正しいURLを与えた場合
