@@ -5,10 +5,8 @@ import sys
 race = Race(sys.argv[1])
 
 if race.analyzeUrl():
-  # 検索したい条件を設定
-  race.setCourse(race.getRaceCourse())
-  race.setDistance(race.getRaceDistance())
-  race.setDistance("右1400")
+  # レースと同じ条件の時計を出力
+  print(race.analyzeThisCondition())
 
-  # 検索条件の結果出力
-  race.outputHourseTime()
+  # レースに近い条件の時計を出力
+  print(race.analyzeNearlyCondition())

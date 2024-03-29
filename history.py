@@ -9,7 +9,7 @@ class History:
     return self.__time
   
   def hasHistory(self, racecouse):
-    if (self.__racecourse.equal(racecouse)):
+    if (self.__racecourse == racecouse):
       return True
     else:
       return False

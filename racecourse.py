@@ -9,8 +9,8 @@ class RaceCourse:
   def getDistance(self):
     return self.__distance
   
-  def equal(self, another):
-    return (self.__course == another.getCourse() and self.__distance == another.getDistance())
+  def __eq__(self, __value):
+    return (self.__course == __value.__course and self.__distance == __value.__distance)
   
   # 設定された競馬場・距離に近い競馬場・距離を返す
   def esitimateCourse(self):

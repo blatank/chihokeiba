@@ -14,8 +14,6 @@ class Race:
     self.__courses = []
     self.__distances = []
     self.__horses = []
-    self.__raceCourse = ""
-    self.__raceDistance = ""
     self.__reaceNo = ""
   
   # データ抽出に使いたい競馬場をセットする
@@ -26,15 +24,46 @@ class Race:
   # 例)右1400
   def setDistance(self, distance):
     self.__distances.append(distance)
-
-  def getRaceDistance(self):
-    return self.__raceDistance
   
   def getRaceCourse(self):
     return self.__raceCourse
   
   def getRaceNo(self):
     return self.__reaceNo
+  
+  # このレースの条件での時計を出力
+  def analyzeThisCondition(self):
+    top_time = []
+
+    # 該当データ検索
+    for horse in self.__horses:
+      time = horse.getTopTime(self.__raceCourse)
+      if time != "":
+        top_time.append(time + "-" + str(horse.getNo()))
+    
+    # ソートして出力する
+    top_time.sort()
+    result = ""
+    for time_str in top_time:
+      if time_str != "":
+        # 持ちタイムと馬番を分離して、馬番を前に出して出力
+        # splited_str[0]：タイム
+        # splited_str[1]：馬番
+        splited_str = re.split(r'-', time_str)
+        h = self.__horses[int(splited_str[1]) - 1]
+        result += splited_str[1] + "番" + h.getName() +"：" + splited_str[0] + "\n"
+    
+    # データあるならタイトル付加する
+    if len(result) > 0:
+      prefix = "レースと同じ条件(" + self.__raceCourse.getCourse() + self.__raceCourse.getDistance() + ")\n"
+      prefix += "----------------------------\n"
+      result = prefix + result
+    
+    return result
+  
+  # このレースに似た条件での時計を出力
+  def analyzeNearlyCondition(self):
+    return "test"
 
   # URL解析
   def analyzeUrl(self):
@@ -60,9 +89,9 @@ class Race:
     # race_info[1]：（右）or（左）
     race_info = re.split(r'ｍ',zenkaku_splitted[1])
     if race_info[1] == "（右）":
-      self.__raceDistance = "右" + race_info[0]
+      distance = "右" + race_info[0]
     else:
-      self.__raceDistance = "左" + race_info[0]
+      distance = "左" + race_info[0]
 
     # URL自体からレース情報の解析
     url = urlparse(self.__url)
@@ -73,13 +102,17 @@ class Race:
       # k_babaCode=32は佐賀
       # TODO：調査用のクラスを作る
       if jouhou[0] == "k_babaCode" and jouhou[1] == "32":
-        self.__raceCourse = "佐賀"
+        course = "佐賀"
       
       # k_raceNoはレースNo.
       if jouhou[0] == "k_raceNo":
         self.__reaceNo = jouhou[1]
     
-    # TODO：このレースの施行条件取得する
+    # エラーチェックとこのレース情報登録
+    if distance != "" and course != "":
+      self.__raceCourse = RaceCourse(course, distance)
+    else:
+      return False
 
     # 過去のレース情報取得(競馬場・距離用)
     races = soup.find_all("div", class_="raceInfo")
@@ -141,7 +174,7 @@ class Race:
   # 時計順で出力
   def outputHourseTime(self):
     # 今はダート決め打ち
-    print(self.getRaceCourse() + self.getRaceNo() + "R" + " ダート" + self.getRaceDistance() + "m")
+    print(self.__raceCourse.getCourse() + self.getRaceNo() + "R" + " ダート" + self.__raceCourse.getDistance() + "m")
 
     # 設定した条件の分だけ検索して出力
     for i in range(len(self.__courses)):

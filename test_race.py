@@ -14,9 +14,10 @@ class TestRace(unittest.TestCase):
 
   # 解析機能を含めたテスト
   def test_integration(self):
-    # 解析するレースをセット
+    # 解析するレースをセットして解析
     # 24/03/10 佐賀10R 右1400
     race = Race(test_url)
+    race.analyzeUrl()
 
     # 参考にしたいレース条件①レースと同条件
     thisConditionData = race.analyzeThisCondition()
@@ -24,7 +25,7 @@ class TestRace(unittest.TestCase):
 
     # 参考にしたいレース条件②レースに近い条件
     nearlyConditionData = race.analyzeNearlyCondition()
-    self.assertTrue(len(thisConditionData) > 0)   
+    self.assertTrue(len(nearlyConditionData) > 0)   
 
   def test_race(self):
     # 正しいURLを与えた場合
@@ -46,9 +47,9 @@ class TestRace(unittest.TestCase):
 
   def test_raceouse(self):
     # レース条件比較
-    self.assertTrue(saga1400.equal(RaceCourse("佐賀", "右1400")))
-    self.assertFalse(saga1400.equal(kouchi1400))
-    self.assertFalse(saga1400.equal(saga1300))
+    self.assertEqual(saga1400, RaceCourse("佐賀", "右1400"))
+    self.assertNotEqual(saga1400, kouchi1400)
+    self.assertNotEqual(saga1400, saga1300)
 
   def test_estimate_distance(self):
     # 近い距離のデータを取得
