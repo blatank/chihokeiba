@@ -22,4 +22,13 @@ class RaceCourse:
       elif self.__distance == "右1300":
         eCourses.append(RaceCourse("佐賀", "右1400"))
 
+    if self.__course == "高知":
+      if self.__distance == "右1400":
+        eCourses.append(RaceCourse("高知", "右1300"))
+      elif self.__distance == "右1300":
+        eCourses.append(RaceCourse("高知", "右1400"))
+      elif self.__distance == "右1600":
+        eCourses.append(RaceCourse("高知", "右1400"))
+        eCourses.append(RaceCourse("高知", "右1300"))
+
     return eCourses

@@ -63,7 +63,36 @@ class Race:
   
   # このレースに似た条件での時計を出力
   def analyzeNearlyCondition(self):
-    return "test"
+    results = ""
+
+    # 該当データ検索
+    races = self.__raceCourse.esitimateCourse()
+    for race in races:
+      top_time = []
+      for horse in self.__horses:
+        time = horse.getTopTime(race)
+        if time != "":
+          top_time.append(time + "-" + str(horse.getNo()))
+      
+      # ソートして出力する
+      top_time.sort()
+      result = ""
+      for time_str in top_time:
+        if time_str != "":
+          # 持ちタイムと馬番を分離して、馬番を前に出して出力
+          # splited_str[0]：タイム
+          # splited_str[1]：馬番
+          splited_str = re.split(r'-', time_str)
+          h = self.__horses[int(splited_str[1]) - 1]
+          result += splited_str[1] + "番" + h.getName() +"：" + splited_str[0] + "\n"
+      
+      # データあるならタイトル付加する
+      if len(result) > 0:
+        prefix = "レースと近い条件(" + race.getCourse() + race.getDistance() + ")\n"
+        prefix += "----------------------------\n"
+        results += prefix + result + "\n"
+    
+    return results
 
   # URL解析
   def analyzeUrl(self):
@@ -96,13 +125,17 @@ class Race:
     # URL自体からレース情報の解析
     url = urlparse(self.__url)
     query = re.split(r'&',url.query)
+    course = ""
     for q in query:
       jouhou = re.split(r'=',q)
 
       # k_babaCode=32は佐賀
       # TODO：調査用のクラスを作る
-      if jouhou[0] == "k_babaCode" and jouhou[1] == "32":
-        course = "佐賀"
+      if jouhou[0] == "k_babaCode":
+        if jouhou[1] == "32":
+          course = "佐賀"
+        elif jouhou[1] == "31":
+          course = "高知"
       
       # k_raceNoはレースNo.
       if jouhou[0] == "k_raceNo":

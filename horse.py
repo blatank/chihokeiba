@@ -22,7 +22,7 @@ class Horse:
       if (history.hasHistory(racecourse)):
         t = history.getTime()
 
-        if time == "" or time > t:
+        if (time == "" or time > t) and t != "":
           time = t
 
     return time
