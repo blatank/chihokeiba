@@ -20,12 +20,13 @@ class TestRace(unittest.TestCase):
     race.analyzeUrl()
 
     # 参考にしたいレース条件①レースと同条件
+    # 佐賀 右1300
     thisConditionData = race.analyzeThisCondition()
     self.assertTrue(len(thisConditionData) > 0)
 
     # 参考にしたいレース条件②レースに近い条件
     nearlyConditionData = race.analyzeNearlyCondition()
-    self.assertTrue(len(nearlyConditionData) > 0)   
+    self.assertTrue(len(nearlyConditionData) > 0)
 
   def test_race(self):
     # 正しいURLを与えた場合

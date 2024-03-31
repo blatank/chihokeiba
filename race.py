@@ -33,11 +33,25 @@ class Race:
   
   # このレースの条件での時計を出力
   def analyzeThisCondition(self):
-    top_time = []
+    return self.analyzeCondtion(self.__raceCourse)
+
+  # このレースに似た条件での時計を出力
+  def analyzeNearlyCondition(self):
+    results = ""
 
     # 該当データ検索
+    nearlyRaces = self.__raceCourse.esitimateCourse()
+    for race in nearlyRaces:
+      results += self.analyzeCondtion(race)
+    
+    return results
+  
+  # 条件に合う時計をソートして文字列にする
+  def analyzeCondtion(self, racecouse):
+    top_time = []
+    # 該当データ検索
     for horse in self.__horses:
-      time = horse.getTopTime(self.__raceCourse)
+      time = horse.getTopTime(racecouse)
       if time != "":
         top_time.append(time + "-" + str(horse.getNo()))
     
@@ -55,44 +69,11 @@ class Race:
     
     # データあるならタイトル付加する
     if len(result) > 0:
-      prefix = "レースと同じ条件(" + self.__raceCourse.getCourse() + self.__raceCourse.getDistance() + ")\n"
+      prefix = "self.__raceCourse.getCourse() + self.__raceCourse.getDistance()\n"
       prefix += "----------------------------\n"
       result = prefix + result
     
     return result
-  
-  # このレースに似た条件での時計を出力
-  def analyzeNearlyCondition(self):
-    results = ""
-
-    # 該当データ検索
-    races = self.__raceCourse.esitimateCourse()
-    for race in races:
-      top_time = []
-      for horse in self.__horses:
-        time = horse.getTopTime(race)
-        if time != "":
-          top_time.append(time + "-" + str(horse.getNo()))
-      
-      # ソートして出力する
-      top_time.sort()
-      result = ""
-      for time_str in top_time:
-        if time_str != "":
-          # 持ちタイムと馬番を分離して、馬番を前に出して出力
-          # splited_str[0]：タイム
-          # splited_str[1]：馬番
-          splited_str = re.split(r'-', time_str)
-          h = self.__horses[int(splited_str[1]) - 1]
-          result += splited_str[1] + "番" + h.getName() +"：" + splited_str[0] + "\n"
-      
-      # データあるならタイトル付加する
-      if len(result) > 0:
-        prefix = "レースと近い条件(" + race.getCourse() + race.getDistance() + ")\n"
-        prefix += "----------------------------\n"
-        results += prefix + result + "\n"
-    
-    return results
 
   # URL解析
   def analyzeUrl(self):
@@ -203,37 +184,3 @@ class Race:
     
     # ここまで来れば正常終了
     return True
-
-  # 時計順で出力
-  def outputHourseTime(self):
-    # 今はダート決め打ち
-    print(self.__raceCourse.getCourse() + self.getRaceNo() + "R" + " ダート" + self.__raceCourse.getDistance() + "m")
-
-    # 設定した条件の分だけ検索して出力
-    for i in range(len(self.__courses)):
-      for j in range(len(self.__distances)):
-        print("-----------------------------")
-        print(self.__courses[i] + " " + self.__distances[j])
-
-        self.printSortedData(self.__courses[i], self.__distances[j])
-  
-  # 条件内をソートして出力
-  def printSortedData(self, course, distance):
-    top_time = []
-
-    # 該当データ検索
-    for horse in self.__horses:
-      time = horse.getTopTime(course, distance)
-      if time != "":
-        top_time.append(time + "-" + str(horse.getNo()))
-    
-    # ソートして出力する
-    top_time.sort()
-    for time_str in top_time:
-      if time_str != "":
-        # 持ちタイムと馬番を分離して、馬番を前に出して出力
-        # splited_str[0]：タイム
-        # splited_str[1]：馬番
-        splited_str = re.split(r'-', time_str)
-        h = self.__horses[int(splited_str[1]) - 1]
-        print(splited_str[1] + "番" + h.getName() +"：" + splited_str[0])
