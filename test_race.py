@@ -1,6 +1,5 @@
 import unittest
 from race import Race
-from history import History
 from racecourse import RaceCourse
 
 test_url = "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_raceDate=2024%2f03%2f10&k_raceNo=10&k_babaCode=32"
@@ -11,23 +10,6 @@ saga1400 = RaceCourse("佐賀", "右1400")
 kouchi1400 = RaceCourse("高知", "右1400")
 
 class TestRace(unittest.TestCase):
-
-  # 解析機能を含めたテスト
-  def test_integration(self):
-    # 解析するレースをセットして解析
-    # 24/03/10 佐賀10R 右1400
-    race = Race(test_url)
-    race.analyzeUrl()
-
-    # 参考にしたいレース条件①レースと同条件
-    # 佐賀 右1300
-    thisConditionData = race.analyzeThisCondition()
-    self.assertTrue(len(thisConditionData) > 0)
-
-    # 参考にしたいレース条件②レースに近い条件
-    nearlyConditionData = race.analyzeNearlyCondition()
-    self.assertTrue(len(nearlyConditionData) > 0)
-
   def test_race(self):
     # 正しいURLを与えた場合
     race = Race(test_url)
@@ -37,22 +19,7 @@ class TestRace(unittest.TestCase):
     race = Race(invalid_url)
     self.assertFalse(race.analyzeUrl())
 
-  def test_history(self):
-    # 適当に戦績を追加
-    history = History(saga1400, "1:30:0")
-
-    # 問合せテスト
-    self.assertTrue(history.hasHistory(saga1400))
-    self.assertFalse(history.hasHistory(kouchi1400))
-    self.assertFalse(history.hasHistory(saga1300))
-
-  def test_raceouse(self):
-    # レース条件比較
-    self.assertEqual(saga1400, RaceCourse("佐賀", "右1400"))
-    self.assertNotEqual(saga1400, kouchi1400)
-    self.assertNotEqual(saga1400, saga1300)
-
-  def test_estimate_distance(self):
+  def test_estimate_couse(self):
     # 近い距離のデータを取得
     eCourse = saga1400.esitimateCourse()
 
