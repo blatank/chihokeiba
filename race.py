@@ -59,19 +59,29 @@ class Race:
     top_time.sort()
     result = ""
     for time_str in top_time:
-      if time_str != "":
-        # 持ちタイムと馬番を分離して、馬番を前に出して出力
-        # splited_str[0]：タイム
-        # splited_str[1]：馬番
-        splited_str = re.split(r'-', time_str)
-        h = self.__horses[int(splited_str[1]) - 1]
-        result += splited_str[1] + "番" + h.getName() +"：" + splited_str[0] + "\n"
+      # ソート用の文字列を出力用の文字列に変換
+      result += self._formattedTimeStr(time_str)
+
     
     # データあるならタイトル付加する
     if len(result) > 0:
-      prefix = "self.__raceCourse.getCourse() + self.__raceCourse.getDistance()\n"
+      prefix = self.__raceCourse.getCourse() + " " + self.__raceCourse.getDistance() + "\n"
       prefix += "----------------------------\n"
       result = prefix + result
+    
+    return result
+
+  # 持ちタイムと馬番の文字列から結果としてふさわしい文字列にする
+  def _formattedTimeStr(self, time_str):
+    result = ""
+
+    if time_str != "":
+      # 持ちタイムと馬番を分離して、馬番を前に出して出力
+      # splited_str[0]：タイム
+      # splited_str[1]：馬番
+      splited_str = re.split(r'-', time_str)
+      h = self.__horses[int(splited_str[1]) - 1]
+      result = splited_str[1] + "番" + h.getName() +"：" + splited_str[0] + "\n"
     
     return result
 
