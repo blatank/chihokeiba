@@ -18,4 +18,4 @@ class TestHistory(unittest.TestCase):
 
     # getTimeのテスト
     self.assertEqual("1:30:0", history.getTime())
-    
+    self.assertNotEqual("1:30:1", history.getTime())
