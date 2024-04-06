@@ -1,3 +1,5 @@
+import csv
+
 class RaceCourse:
   def __init__(self, course, distance):
     self.__course = course
@@ -16,19 +18,13 @@ class RaceCourse:
   def esitimateCourse(self):
     eCourses = []
 
-    if self.__course == "佐賀":
-      if self.__distance == "右1400":
-        eCourses.append(RaceCourse("佐賀", "右1300"))
-      elif self.__distance == "右1300":
-        eCourses.append(RaceCourse("佐賀", "右1400"))
-
-    if self.__course == "高知":
-      if self.__distance == "右1400":
-        eCourses.append(RaceCourse("高知", "右1300"))
-      elif self.__distance == "右1300":
-        eCourses.append(RaceCourse("高知", "右1400"))
-      elif self.__distance == "右1600":
-        eCourses.append(RaceCourse("高知", "右1400"))
-        eCourses.append(RaceCourse("高知", "右1300"))
+    # 今のコースのファイルを読み出す
+    # 読み出したら1行ずつ読み出す
+    with open(self.__course + '_' + self.__distance + '.txt') as f:
+      reader = csv.reader(f)
+      # 競馬場,距離となっているため、データを取り出す
+      for row in reader:
+        # 取り出したデータを近い条件として登録
+        eCourses.append(RaceCourse(row[0],row[1]))
 
     return eCourses
