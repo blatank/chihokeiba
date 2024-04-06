@@ -1,3 +1,4 @@
+import os
 import csv
 
 class RaceCourse:
@@ -19,12 +20,15 @@ class RaceCourse:
     eCourses = []
 
     # 今のコースのファイルを読み出す
-    # 読み出したら1行ずつ読み出す
-    with open(self.__course + '_' + self.__distance + '.txt') as f:
-      reader = csv.reader(f)
-      # 競馬場,距離となっているため、データを取り出す
-      for row in reader:
-        # 取り出したデータを近い条件として登録
-        eCourses.append(RaceCourse(row[0],row[1]))
+    datafile = "data/" + self.__course + "_" + self.__distance + ".txt"
+    if os.path.isfile(datafile):
+      with open(datafile) as f:
+        reader = csv.reader(f)
+  
+        # 読み出したら1行ずつ読み出す
+        for row in reader:
+          # 競馬場,距離となっているため、データを取り出す
+          # 取り出したデータを近い条件として登録
+          eCourses.append(RaceCourse(row[0], row[1]))
 
     return eCourses
