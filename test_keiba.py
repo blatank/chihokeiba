@@ -13,10 +13,10 @@ class TestKeiba(unittest.TestCase):
     race.analyzeUrl()
 
     # 参考にしたいレース条件①レースと同条件
-    # 佐賀 右1300
     thisConditionData = race.analyzeThisCondition()
     self.assertTrue(len(thisConditionData) > 0)
 
     # 参考にしたいレース条件②レースに近い条件
+    # 佐賀 右1300
     nearlyConditionData = race.analyzeNearlyCondition()
     self.assertTrue(len(nearlyConditionData) > 0)
