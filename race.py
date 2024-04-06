@@ -47,11 +47,11 @@ class Race:
     return results
   
   # 条件に合う時計をソートして文字列にする
-  def analyzeCondtion(self, racecouse):
+  def analyzeCondtion(self, racecourse):
     top_time = []
     # 該当データ検索
     for horse in self.__horses:
-      time = horse.getTopTime(racecouse)
+      time = horse.getTopTime(racecourse)
       if time != "":
         top_time.append(time + "-" + str(horse.getNo()))
     
@@ -65,7 +65,7 @@ class Race:
     
     # データあるならタイトル付加する
     if len(result) > 0:
-      prefix = self.__raceCourse.getCourse() + " " + self.__raceCourse.getDistance() + "\n"
+      prefix = racecourse.getCourse() + " " + racecourse.getDistance() + "\n"
       prefix += "----------------------------\n"
       result = prefix + result
     
