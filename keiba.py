@@ -6,7 +6,7 @@ race = Race(sys.argv[1])
 
 if race.analyzeUrl():
   # レースと同じ条件の時計を出力
-  thisCodData = race.analyzeThisCondition())
+  thisCodData = race.analyzeThisCondition()
   if len(thisCodData) > 0:
     print(thisCodData)
   else:
