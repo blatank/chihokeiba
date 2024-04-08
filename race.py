@@ -67,7 +67,7 @@ class Race:
     if len(result) > 0:
       prefix = racecourse.getCourse() + " " + racecourse.getDistance() + "\n"
       prefix += "----------------------------\n"
-      result = prefix + result
+      result = prefix + result + "\n"
     
     return result
 
