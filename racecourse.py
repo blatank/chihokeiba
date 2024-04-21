@@ -22,7 +22,7 @@ class RaceCourse:
     # 今のコースのファイルを読み出す
     datafile = "data/" + self.__course + "_" + self.__distance + ".txt"
     if os.path.isfile(datafile):
-      with open(datafile) as f:
+      with open(datafile, encoding='UTF-8') as f:
         reader = csv.reader(f)
   
         # 読み出したら1行ずつ読み出す
