@@ -122,11 +122,16 @@ class Race:
 
       # k_babaCode=32は佐賀
       # TODO：調査用のクラスを作る
+      # TODO：racecousedictionaryに置き換える
       if jouhou[0] == "k_babaCode":
         if jouhou[1] == "32":
           course = "佐賀"
         elif jouhou[1] == "31":
           course = "高知"
+        elif jouhou[1] == "27":
+          course = "園田"
+        else:
+          print("該当する競馬場が有りません！")
       
       # k_raceNoはレースNo.
       if jouhou[0] == "k_raceNo":
