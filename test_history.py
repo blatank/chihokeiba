@@ -19,3 +19,14 @@ class TestHistory(unittest.TestCase):
     # getTimeのテスト
     self.assertEqual("1:30:0", history.getTime())
     self.assertNotEqual("1:30:1", history.getTime())
+    
+    # getDateのテスト
+    self.assertEqual("", history.getDate())
+    self.assertNotEqual("24.04.16", history.getDate())
+    
+    # 適当に戦績を追加(日付付き)
+    history = History(saga1400, "1:30:0", "24.04.16")
+
+    # getDateのテスト
+    self.assertEqual("24.04.16", history.getDate())
+    self.assertNotEqual("23.04.16", history.getDate())
