@@ -80,8 +80,18 @@ class Race:
       # splited_str[0]：タイム
       # splited_str[1]：馬番
       splited_str = re.split(r'-', time_str)
+      no = splited_str[1]
+      if len(no) == 1:
+        no = " " + no
+      
       h = self.__horses[int(splited_str[1]) - 1]
-      result = splited_str[1] + "番" + h.getName() +"：" + splited_str[0] + "\n"
+      name = h.getName()
+      if len(name) < 9:
+        n = 9 - len(name)
+        for i in range(n):
+          name = name + "  "
+
+      result = no + "番" + name +" " + splited_str[0] + "\n"
     
     return result
 
@@ -151,6 +161,7 @@ class Race:
 
     # 走破時計保存用一時配列初期化(二次元配列で使用)
     time = []
+    last3F = []
 
     #馬名取り出し処理
     no = 1
@@ -159,6 +170,7 @@ class Race:
       self.__horses.append(Horse(horse.get_text(), no))
       no += 1
       time.append([])
+      last3F.append([])
 
     #走破時計取り出し処理
     for i in range(len(self.__horses)):
@@ -176,26 +188,51 @@ class Race:
         else:
           time[i].append("")
 
+        t3 = re.split(r'　', t2[2+j])
+        if len(t3) >= 3:
+          last3F[i].append(t3[2].replace("\n", ""))
+        else:
+          last3F[i].append("")
+
     #競馬場取り出し処理
     for i in range(len(self.__horses)):
       for j in range(5):
         k2 = re.split(r'<br/>', str(races[i * 5 +j]))
         if len(k2) > 1:
+          hiduke = re.findall(r'[\w|\.]+　\w+　\w+', k2[0])
+
+          if len(hiduke) > 0:
+            hiduke2 = re.split(r'　', hiduke[0])
+            date = hiduke2[0]
+            baba = hiduke2[1]
+            parts = hiduke2[2]
+          else:
+            date = ""
+            baba = ""
+            parts = ""
+          
           keibajou2 = re.findall(r'\w+　\w+　\w+', k2[1])
           if len(keibajou2) > 0:
             keibajou3 = re.split(r'　', keibajou2[0])
             place = keibajou3[0]
             dis = keibajou3[1]
+            gate = keibajou3[2]
+            
           else:
             place = ""
             dis = ""
+            gate = ""
         else:
             place = ""
             dis = ""
+            date = ""
+            baba = ""
+            parts = ""
+            gate = ""
 
         # self.__keibajou[i].append(place)
         # self.__kyori[i].append(dis)
-        self.__horses[i].addHistory(RaceCourse(place, dis), time[i][j])
+        self.__horses[i].addHistory(RaceCourse(place, dis), time[i][j], date, baba, parts, gate, last3F[i][j])
     
     # ここまで来れば正常終了
     return True

@@ -13,8 +13,8 @@ class Horse:
   def getNo(self):
     return self.__no
 
-  def addHistory(self, racecourse, time):
-    self.__histories.append(History(racecourse, time))
+  def addHistory(self, racecourse, time, date, baba, parts, gate, last3F):
+    self.__histories.append(History(racecourse, time, date, baba, parts, gate, last3F))
 
   def getTopTime(self, racecourse):
     time = ""
