@@ -12,3 +12,11 @@ class RaceCourseDictionary:
         return d["Name"]
     
     return ""
+  
+  # 競馬場名から馬場コードを取得 
+  def inquireBabaCode(self, course):
+    for d in self._data:
+      if d["Name"] == course:
+        return str(d["Code"])
+    
+    return ""
