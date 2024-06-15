@@ -1,8 +1,24 @@
-from race import Race  
+from race import Race
+from racecoursedictionary import RaceCourseDictionary
 import sys
+import datetime
+import urllib.parse
+dic = RaceCourseDictionary("racecoursedictionary.json")
+
+#URLを作成
+# url = sys.argv[1]
+url = "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?"
+if len(sys.argv) > 3:
+  url = url + "k_raceDate=" + urllib.parse.quote(sys.argv[3]) + "&"
+else:
+  dt_now = datetime.datetime.now()
+  url = url + "k_raceDate=" + urllib.parse.quote(dt_now.strftime('%Y/%m/%d')) + "&"
+
+url = url + "k_raceNo=" + sys.argv[2] + "&"
+url = url + "k_babaCode=" + dic.inquireBabaCode(sys.argv[1])
 
 # argv[1]:URL
-race = Race(sys.argv[1])
+race = Race(url)
 
 if race.analyzeUrl():
   # レースと同じ条件の時計を出力
