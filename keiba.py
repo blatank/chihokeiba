@@ -3,19 +3,24 @@ from racecoursedictionary import RaceCourseDictionary
 import sys
 import datetime
 import urllib.parse
+import argparse
+
 dic = RaceCourseDictionary("racecoursedictionary.json")
+
+dt_now = datetime.datetime.now()
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--place", help="競馬場")
+parser.add_argument("--no", help="レース番号")
+parser.add_argument("--date", help="レース日(yyyy/mm/dd)", default=dt_now.strftime('%Y/%m/%d'))
+args = parser.parse_args()
 
 #URLを作成
 # url = sys.argv[1]
 url = "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?"
-if len(sys.argv) > 3:
-  url = url + "k_raceDate=" + urllib.parse.quote(sys.argv[3]) + "&"
-else:
-  dt_now = datetime.datetime.now()
-  url = url + "k_raceDate=" + urllib.parse.quote(dt_now.strftime('%Y/%m/%d')) + "&"
-
-url = url + "k_raceNo=" + sys.argv[2] + "&"
-url = url + "k_babaCode=" + dic.inquireBabaCode(sys.argv[1])
+url = url + "k_raceDate=" + urllib.parse.quote(args.date) + "&"
+url = url + "k_raceNo=" + args.no + "&"
+url = url + "k_babaCode=" + dic.inquireBabaCode(args.place)
 
 # argv[1]:URL
 race = Race(url)
