@@ -14,6 +14,7 @@ class Race:
     self.__courses = []
     self.__distances = []
     self.__horses = []
+    self.__jockeys = []
     self.__reaceNo = ""
   
   # データ抽出に使いたい競馬場をセットする
@@ -81,6 +82,7 @@ class Race:
       # splited_str[1]：馬番
       splited_str = re.split(r'-', time_str)
       no = splited_str[1]
+      index = int(no) - 1
       if len(no) == 1:
         no = " " + no
       
@@ -91,7 +93,7 @@ class Race:
         for i in range(n):
           name = name + "  "
 
-      result = no + "番" + name +" " + splited_str[0] + "\n"
+      result = no + "番" + name + "(" + self.__jockeys[index] + ") " + splited_str[0] + "\n"
     
     return result
 
@@ -103,6 +105,13 @@ class Race:
 
     # 馬名の抽出
     names = soup.find_all("a", class_="horseName")
+    
+    # 抽出がうまく行かなかった場合はURLが間違っていると思われる
+    if len(names) == 0:
+      return False
+    
+    # 騎手名の抽出
+    jockeynames = soup.find_all("a", class_="jockeyName")
     
     # 抽出がうまく行かなかった場合はURLが間違っていると思われる
     if len(names) == 0:
@@ -172,15 +181,32 @@ class Race:
       time.append([])
       last3F.append([])
 
+    #騎手名取り出し処理
+    # no = 1
+    for jockey in jockeynames:
+      st = re.split(r'\n',jockey.get_text())
+      st2 = re.split(r'（',st[1])
+      self.__jockeys.append(st2[0])
+
     #走破時計取り出し処理
     for i in range(len(self.__horses)):
       # TODO:何を目的としているかコメントに残す
       t2 = re.split(r'</td>',str(history_table[i * 5 + 5]))
+      t4 = re.split(r'</td>',str(history_table[i * 5 + 4]))
+      
 
       # 馬柱に載っているのは過去5走
       # そのデータを分解し、Horseにセットする
       for j in range(5):
         tokei2 = re.findall(r'\d:\d\d\.\d', t2[2+j])
+        st4 = re.split(r'　',t4[3+j])
+        st42 = re.split(r' ',st4[2])
+        l = len(st42[0])
+
+        if l > 3 :
+          jk = st42[0][l-3:l]
+        else:
+          jk =st42[0]
 
         # データが空(出走数が少ない場合など)ではない？
         if len(tokei2) > 0:
