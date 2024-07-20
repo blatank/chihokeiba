@@ -207,7 +207,6 @@ class Race:
       t2 = re.split(r'</td>',str(history_table[i * 5 + 5]))
       t4 = re.split(r'</td>',str(history_table[i * 5 + 4]))
       
-
       # 馬柱に載っているのは過去5走
       # そのデータを分解し、Horseにセットする
       for j in range(5):
@@ -215,11 +214,13 @@ class Race:
 
         # 騎手名とりだし
         st4 = re.split(r'　',t4[3+j])
-        if len(st4) > 3: # データあり？
+        if len(st4) >= 3: # データあり？
           st42 = re.split(r' ',st4[2])
           l = len(st42[0])
 
-          if l > 3 :
+          # ☆とかあれば取り除く
+          if l >= 3 :
+            # TODO:武豊など、3文字以内の騎手がいる場合バグ有
             jk = st42[0][l-3:l]
           else:
             jk = st42[0]
