@@ -212,15 +212,20 @@ class Race:
       # そのデータを分解し、Horseにセットする
       for j in range(5):
         tokei2 = re.findall(r'\d:\d\d\.\d', t2[2+j])
-        st4 = re.split(r'　',t4[3+j])
-        st42 = re.split(r' ',st4[2])
-        l = len(st42[0])
 
-        if l > 3 :
-          jk = st42[0][l-3:l]
+        # 騎手名とりだし
+        st4 = re.split(r'　',t4[3+j])
+        if len(st4) > 3: # データあり？
+          st42 = re.split(r' ',st4[2])
+          l = len(st42[0])
+
+          if l > 3 :
+            jk = st42[0][l-3:l]
+          else:
+            jk = st42[0]
+          jockeys[i].append(jk)
         else:
-          jk =st42[0]
-        jockeys[i].append(jk)
+          jockeys[i].append("")
 
         # データが空(出走数が少ない場合など)ではない？
         if len(tokei2) > 0:
