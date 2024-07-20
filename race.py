@@ -50,11 +50,14 @@ class Race:
   # 条件に合う時計をソートして文字列にする
   def analyzeCondtion(self, racecourse):
     top_time = []
+    nodata = ""
     # 該当データ検索
     for horse in self.__horses:
       time = horse.getTopTime(racecourse)
       if time != "":
         top_time.append(time + "-" + str(horse.getNo()))
+      else:
+        nodata += " " + str(horse.getNo()) + "番"
     
     # ソートして出力する
     top_time.sort()
@@ -66,6 +69,8 @@ class Race:
     
     # データあるならタイトル付加する
     if len(result) > 0:
+      if len(nodata) > 0:
+        result += "\nデータなし:"  + nodata
       prefix = racecourse.getCourse() + " " + racecourse.getDistance() + "\n"
       prefix += "----------------------------\n"
       result = prefix + result + "\n"
@@ -92,8 +97,14 @@ class Race:
         n = 9 - len(name)
         for i in range(n):
           name = name + "  "
+      
+      jk = self.__jockeys[index]
+      if jk == h.getPreviousJockey() :
+        change = " "
+      else :
+        change = "*"
 
-      result = no + "番" + name + "(" + self.__jockeys[index] + ") " + splited_str[0] + "\n"
+      result = no + "番" + name + "(" + jk + change + ") " + splited_str[0] + "\n"
     
     return result
 
@@ -171,6 +182,7 @@ class Race:
     # 走破時計保存用一時配列初期化(二次元配列で使用)
     time = []
     last3F = []
+    jockeys = []
 
     #馬名取り出し処理
     no = 1
@@ -180,6 +192,7 @@ class Race:
       no += 1
       time.append([])
       last3F.append([])
+      jockeys.append([])
 
     #騎手名取り出し処理
     # no = 1
@@ -207,6 +220,7 @@ class Race:
           jk = st42[0][l-3:l]
         else:
           jk =st42[0]
+        jockeys[i].append(jk)
 
         # データが空(出走数が少ない場合など)ではない？
         if len(tokei2) > 0:
@@ -258,7 +272,7 @@ class Race:
 
         # self.__keibajou[i].append(place)
         # self.__kyori[i].append(dis)
-        self.__horses[i].addHistory(RaceCourse(place, dis), time[i][j], date, baba, parts, gate, last3F[i][j])
+        self.__horses[i].addHistory(RaceCourse(place, dis), time[i][j], date, baba, parts, gate, last3F[i][j], jockeys[i][j])
     
     # ここまで来れば正常終了
     return True

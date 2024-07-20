@@ -12,9 +12,12 @@ class Horse:
   
   def getNo(self):
     return self.__no
+  
+  def getPreviousJockey(self):
+    return self.__histories[0].getJockey()
 
-  def addHistory(self, racecourse, time, date, baba, parts, gate, last3F):
-    self.__histories.append(History(racecourse, time, date, baba, parts, gate, last3F))
+  def addHistory(self, racecourse, time, date, baba, parts, gate, last3F, jockey):
+    self.__histories.append(History(racecourse, time, date, baba, parts, gate, last3F, jockey))
 
   def getTopTime(self, racecourse):
     time = ""

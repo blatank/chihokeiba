@@ -1,7 +1,7 @@
 from racecourse import RaceCourse
 
 class History:
-  def __init__(self, racecourse, time, date, baba, parts, gate, last3F):
+  def __init__(self, racecourse, time, date, baba, parts, gate, last3F, jockey):
     self.__racecourse = racecourse
     self.__time = time
     self.__date = date
@@ -9,6 +9,7 @@ class History:
     self.__parts = parts
     self.__gate = gate
     self.__last3F = last3F
+    self.__jockey = jockey
 
 
   def getTime(self):
@@ -19,6 +20,9 @@ class History:
   
   def getDate(self):
     return self.__date
+  
+  def getJockey(self):
+    return self.__jockey
   
   def hasHistory(self, racecouse):
     if (self.__racecourse == racecouse):
