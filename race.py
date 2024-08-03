@@ -47,6 +47,48 @@ class Race:
     
     return results
   
+  def analyzeEsitimateTime(self):
+    top_time = []
+
+    #今の条件の時計を拾う
+    times = self.analyzeTime(self.__raceCourse)
+    top_time.append(times)
+
+    #似た条件の時計を拾う
+    nearlyRaces = self.__raceCourse.esitimateCourse()
+    for race in nearlyRaces:
+      nearlyTimes = self.analyzeTime(race)
+      top_time.append(nearlyTimes)
+    
+    #似た条件の時計を補正する
+    i = 0
+    tops = []
+    for horse in self.__horses:
+      top_time[1][i] += 70
+      top_time[2][i] -= 140
+      t = 9999
+      for j in range(len(nearlyRaces)+1):
+        # print(str(j) + " " + str(i))
+        if top_time[j][i] < t:
+          t = top_time[j][i]
+      tops.append(t)
+      i += 1
+
+    print(tops)
+    return ""
+  
+  def analyzeTime(self, racecourse):
+    top_time = []
+    nodata = ""
+    # 該当データ検索
+    for horse in self.__horses:
+      time = horse.getTopTimeInt(racecourse)
+      if time != 0:
+        top_time.append(time)
+      else:
+        top_time.append(0)
+    return top_time
+  
   # 条件に合う時計をソートして文字列にする
   def analyzeCondtion(self, racecourse):
     top_time = []

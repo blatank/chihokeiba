@@ -1,4 +1,5 @@
 from racecourse import RaceCourse
+import re
 
 class History:
   def __init__(self, racecourse, time, date, baba, parts, gate, last3F, jockey):
@@ -10,7 +11,18 @@ class History:
     self.__gate = gate
     self.__last3F = last3F
     self.__jockey = jockey
+    # self.setTimeInt()
+    self.__timeInt = 0
 
+  def getTimeInt(self):
+    splited_str = re.split(r':', self.__time)
+    m = int(splited_str[0]) * 600
+    s = float(splited_str[1]) * 10
+    self.__timeInt = int(m + s)
+    return self.__timeInt
+
+  def getTimeStr(self):
+    return self.__time
 
   def getTime(self):
     if len(self.__time) > 0:

@@ -39,3 +39,9 @@ if race.analyzeUrl():
     print(nearlyData)
   else:
     print("近い条件のデータがありません")
+
+  timeData = race.analyzeEsitimateTime()
+  if len(timeData) > 0:
+    print(timeData)
+  else:
+    print("error")

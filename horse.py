@@ -25,7 +25,24 @@ class Horse:
       if (history.hasHistory(racecourse)):
         t = history.getTime()
 
+        #最初の履歴、またはより早い時計を見つけた場合
         if (time == "" or time > t) and t != "":
           time = t
 
     return time
+  
+  def getTopTimeInt(self, racecourse):
+    time = ""
+    for history in self.__histories:
+      if (history.hasHistory(racecourse)):
+        t = history.getTime()
+
+        #最初の履歴、またはより早い時計を見つけた場合
+        if (time == "" or time > t) and t != "":
+          time = t
+          h = history
+
+    if time != "":
+      return h.getTimeInt()
+
+    return 9999
