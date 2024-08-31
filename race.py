@@ -64,18 +64,25 @@ class Race:
     i = 0
     tops = []
     for horse in self.__horses:
-      top_time[1][i] += 70
-      top_time[2][i] -= 140
-      t = 9999
-      for j in range(len(nearlyRaces)+1):
-        # print(str(j) + " " + str(i))
-        if top_time[j][i] < t:
-          t = top_time[j][i]
-      tops.append(t)
+      if(top_time[1][i] != 9999):
+        top_time[1][i] -= 70
+        # top_time[2][i] -= 140
+        t = 9999
+        for j in range(len(nearlyRaces)+1):
+          # print(str(j) + " " + str(i))
+          if top_time[j][i] < t:
+            t = top_time[j][i]
+
+        tops.append(Race.convTime(t) + "-" + str(horse.getNo()))
       i += 1
 
-    print(tops)
-    return ""
+    tops.sort()
+    result = ""
+    for time_str in tops:
+      # ソート用の文字列を出力用の文字列に変換
+      result += self._formattedTimeStr(time_str)
+    
+    return result
   
   def analyzeTime(self, racecourse):
     top_time = []
@@ -88,6 +95,15 @@ class Race:
       else:
         top_time.append(0)
     return top_time
+  
+  def convTime(time):
+    m = int(time / 600)
+    s = int((time - (m * 600)) / 10)
+    ms = time % 10
+
+    convertedTime = str(m) + ":" + str(s) + "." + str(ms)
+
+    return convertedTime
   
   # 条件に合う時計をソートして文字列にする
   def analyzeCondtion(self, racecourse):
@@ -108,7 +124,6 @@ class Race:
       # ソート用の文字列を出力用の文字列に変換
       result += self._formattedTimeStr(time_str)
 
-    
     # データあるならタイトル付加する
     if len(result) > 0:
       if len(nodata) > 0:
