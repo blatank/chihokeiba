@@ -2,6 +2,8 @@ from bs4 import BeautifulSoup
 
 import requests
 import re
+import os
+import csv
 from urllib.parse import urlparse
 
 from horse import Horse
@@ -47,6 +49,27 @@ class Race:
     
     return results
   
+  # 条件に近いデータの補正値を出力
+  def getAjustedTime(thisCourse, nearlyCourse):
+    ajustedTime = 0
+
+    # 今のコースのファイルを読み出す
+    datafile = "data/" + thisCourse.getCourse() + "_" + thisCourse.getDistance() + ".txt"
+    if os.path.isfile(datafile):
+      with open(datafile, encoding='UTF-8') as f:
+        reader = csv.reader(f)
+  
+        # 読み出したら1行ずつ読み出す
+        for row in reader:
+          # 競馬場,距離となっているため、データを取り出す
+          # 取り出したデータを近い条件として登録
+          if row[0] == nearlyCourse.getCourse() and\
+             row[1] == nearlyCourse.getDistance():
+            ajustedTime = int(row[2])
+            break
+
+    return ajustedTime
+  
   def analyzeEsitimateTime(self):
     top_time = []
 
@@ -63,17 +86,20 @@ class Race:
     #似た条件の時計を補正する
     i = 0
     tops = []
-    for horse in self.__horses:
-      if(top_time[1][i] != 9999):
-        top_time[1][i] -= 70
-        # top_time[2][i] -= 140
-        t = 9999
-        for j in range(len(nearlyRaces)+1):
-          # print(str(j) + " " + str(i))
-          if top_time[j][i] < t:
-            t = top_time[j][i]
 
-        tops.append(Race.convTime(t) + "-" + str(horse.getNo()))
+    for horse in self.__horses:
+      k = 1
+      for nearlyRace in nearlyRaces:
+        if(top_time[k][i] != 9999):
+          top_time[k][i] += Race.getAjustedTime(self.__raceCourse, nearlyRace)
+
+      # 補正した分も含めて最速タイムを算出する
+      t = 9999
+      for j in range(len(nearlyRaces)+1):
+        if top_time[j][i] < t:
+          t = top_time[j][i]
+
+      tops.append(Race.convTime(t) + "-" + str(horse.getNo()))
       i += 1
 
     tops.sort()

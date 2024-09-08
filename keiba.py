@@ -42,6 +42,7 @@ if race.analyzeUrl():
 
   timeData = race.analyzeEsitimateTime()
   if len(timeData) > 0:
+    print("補正データ出力\n----------------------------")
     print(timeData)
   else:
     print("error")
