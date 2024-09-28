@@ -85,13 +85,16 @@ class Race:
     
     #似た条件の時計を補正する
     i = 0
+    nodata = ""
     tops = []
 
     for horse in self.__horses:
       k = 1
+      # 補正実施
       for nearlyRace in nearlyRaces:
         if(top_time[k][i] != 9999):
           top_time[k][i] += Race.getAjustedTime(self.__raceCourse, nearlyRace)
+        k += 1
 
       # 補正した分も含めて最速タイムを算出する
       t = 9999
@@ -99,7 +102,10 @@ class Race:
         if top_time[j][i] < t:
           t = top_time[j][i]
 
-      tops.append(Race.convTime(t) + "-" + str(horse.getNo()))
+      if t != 9999:
+        tops.append(Race.convTime(t) + "-" + str(horse.getNo()))
+      else:
+        nodata += " " + str(horse.getNo()) + "番"
       i += 1
 
     tops.sort()
@@ -107,6 +113,9 @@ class Race:
     for time_str in tops:
       # ソート用の文字列を出力用の文字列に変換
       result += self._formattedTimeStr(time_str)
+    
+    if len(nodata) > 0:
+      result += "\nデータなし:"  + nodata
     
     return result
   
@@ -125,9 +134,13 @@ class Race:
   def convTime(time):
     m = int(time / 600)
     s = int((time - (m * 600)) / 10)
+    if s < 10:
+      str_s = "0" + str(s)
+    else:
+      str_s = str(s)
     ms = time % 10
 
-    convertedTime = str(m) + ":" + str(s) + "." + str(ms)
+    convertedTime = str(m) + ":" + str_s + "." + str(ms)
 
     return convertedTime
   
