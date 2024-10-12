@@ -109,10 +109,34 @@ class Race:
       i += 1
 
     tops.sort()
+
     result = ""
+    i = 0
+    j = 0
     for time_str in tops:
       # ソート用の文字列を出力用の文字列に変換
-      result += self._formattedTimeStr(time_str)
+      r = self._formattedTimeStr(time_str)
+
+      time_str = re.sub(r'-\d+', '', time_str)
+      r = re.sub(r'\n', '', r)
+      
+      splited_str = re.split(r':', time_str)
+      m = int(splited_str[0]) * 600
+      s = float(splited_str[1]) * 10
+      t = int(m + s)
+
+      #１回目の時間を保存
+      if i == 0:
+        fast = t
+      #最速タイムとの差を確認
+      diff = t - fast
+
+      if diff > 10 and j == 0:
+        result += "*******************************\n"
+        j = 1
+      
+      result += r + " (+" + Race.convTime(diff) + ")\n"
+      i += 1
     
     if len(nodata) > 0:
       result += "\nデータなし:"  + nodata
