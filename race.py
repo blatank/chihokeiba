@@ -256,6 +256,8 @@ class Race:
           course = "高知"
         elif jouhou[1] == "27":
           course = "園田"
+        elif jouhou[1] == "22":
+          course = "金沢"
         else:
           print("該当する競馬場が有りません！")
       
