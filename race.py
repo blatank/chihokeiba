@@ -9,6 +9,8 @@ from urllib.parse import urlparse
 from horse import Horse
 from history import History
 from racecourse import RaceCourse
+from racecoursedictionary import RaceCourseDictionary
+
 
 class Race:
   def __init__(self, url):
@@ -271,18 +273,10 @@ class Race:
       jouhou = re.split(r'=',q)
 
       # k_babaCode=32は佐賀
-      # TODO：調査用のクラスを作る
-      # TODO：racecousedictionaryに置き換える
       if jouhou[0] == "k_babaCode":
-        if jouhou[1] == "32":
-          course = "佐賀"
-        elif jouhou[1] == "31":
-          course = "高知"
-        elif jouhou[1] == "27":
-          course = "園田"
-        elif jouhou[1] == "22":
-          course = "金沢"
-        else:
+        dictionary = RaceCourseDictionary("racecoursedictionary.json")
+        course = dictionary.inquireRaceCourseName(int(jouhou[1]))
+        if course == "":
           print("該当する競馬場が有りません！")
       
       # k_raceNoはレースNo.
