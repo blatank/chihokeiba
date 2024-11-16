@@ -1,6 +1,7 @@
 from url import Url
 from analyze import Analyze
 from tkcalendar import Calendar, DateEntry
+from racecoursedictionary import RaceCourseDictionary
 import tkinter as tk
 import tkinter.ttk as ttk
 import subprocess
@@ -11,12 +12,13 @@ class TestTkcalender(tk.Frame):
         super().__init__(master)
         self.pack()
         self.master.title("tkカレンダーテスト")
-        # self.master.geometry("800x600")
+        self.master.geometry("400x200")
 
         label = tk.Label(master, text="競馬場")
         label.pack()
 
-        self.__place_txt = ttk.Combobox(master, values = ("佐賀","高知"))
+        dictionary = RaceCourseDictionary("racecoursedictionary.json")
+        self.__place_txt = ttk.Combobox(master, values = dictionary.getAllRaceCourseName())
         self.__place_txt.pack()
 
         label = tk.Label(master, text="レースNo")

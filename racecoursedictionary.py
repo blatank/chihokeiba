@@ -20,3 +20,11 @@ class RaceCourseDictionary:
         return str(d["Code"])
     
     return ""
+  
+  def getAllRaceCourseName(self):
+    names = []
+    for d in self._data:
+      names.append(d["Name"])
+
+    return names
+  
