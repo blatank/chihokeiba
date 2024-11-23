@@ -1,11 +1,16 @@
 from racecourse import RaceCourse
 import re
+import datetime
 
 class History:
   def __init__(self, racecourse, time, date, baba, parts, gate, last3F, jockey):
     self.__racecourse = racecourse
     self.__time = time
-    self.__date = date
+    if date != "":
+      d =  re.split(r'\.', date)
+      self.__date = datetime.datetime(int("20" + d[0]),int(d[1]),int(d[2]))
+    else:
+      self.__date = datetime.datetime(1999, 1, 1)
     self.__baba = baba
     self.__parts = parts
     self.__gate = gate
@@ -26,10 +31,13 @@ class History:
 
   def getTime(self):
     if len(self.__time) > 0:
-      return self.__time + " [" +  self.__last3F + "]  (" + self.__date + " " + self.__baba + " " + self.__gate + "/" + self.__parts + ")"
+      return self.__time + " [" +  self.__last3F + "]  (" + self.getDateStr() + " " + self.__baba + " " + self.__gate + "/" + self.__parts + ")"
     else:
       return ""
   
+  def getDateStr(self):
+    return self.__date.strftime('%Y.%m.%d')
+
   def getDate(self):
     return self.__date
   

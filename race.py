@@ -4,6 +4,7 @@ import requests
 import re
 import os
 import csv
+import datetime
 from urllib.parse import urlparse
 
 from horse import Horse
@@ -20,7 +21,14 @@ class Race:
     self.__horses = []
     self.__jockeys = []
     self.__reaceNo = ""
+    self.__date = self.getDate(url)
   
+  def getDate(self, url):
+    u1 = re.split(r'&', url)
+    u2 = re.split(r'k_raceDate=', u1[0])
+    u3 = re.split(r'/', u2[1])
+    return datetime.datetime(int(u3[0]),int(u3[1]),int(u3[2]))
+
   # データ抽出に使いたい競馬場をセットする
   def setCourse(self, course):
     self.__courses.append(course)
@@ -174,9 +182,14 @@ class Race:
   def analyzeCondtion(self, racecourse):
     top_time = []
     nodata = ""
+    # レースの前の２か月前の1日までにする
+    if self.__date.month <= 2 :
+      c_date = datetime.datetime(self.__date.year - 1,self.__date.month + 12 - 2,1)
+    else:
+      c_date = datetime.datetime(self.__date.year,self.__date.month - 2,1)
     # 該当データ検索
     for horse in self.__horses:
-      time = horse.getTopTime(racecourse)
+      time = horse.getTopTime(racecourse,c_date)
       if time != "":
         top_time.append(time + "-" + str(horse.getNo()))
       else:

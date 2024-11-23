@@ -1,5 +1,6 @@
 from history import History
 from racecourse import RaceCourse
+import datetime
 
 class Horse:
   def __init__(self, name, no):
@@ -19,14 +20,14 @@ class Horse:
   def addHistory(self, racecourse, time, date, baba, parts, gate, last3F, jockey):
     self.__histories.append(History(racecourse, time, date, baba, parts, gate, last3F, jockey))
 
-  def getTopTime(self, racecourse):
+  def getTopTime(self, racecourse, date = datetime.datetime(2000, 1, 1)):
     time = ""
     for history in self.__histories:
       if (history.hasHistory(racecourse)):
         t = history.getTime()
 
         #最初の履歴、またはより早い時計を見つけた場合
-        if (time == "" or time > t) and t != "":
+        if (time == "" or time > t) and t != "" and history.getDate() >= date:
           time = t
 
     return time
