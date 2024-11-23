@@ -16,9 +16,9 @@ class TestHistory(unittest.TestCase):
     self.assertFalse(history.hasHistory(kouchi1400))
     self.assertFalse(history.hasHistory(saga1300))
 
-    # getTimeのテスト
-    self.assertEqual("1:30:0", history.getTime())
-    self.assertNotEqual("1:30:1", history.getTime())
+    # getTimeStrのテスト
+    self.assertEqual("1:30:0", history.getTimeStr())
+    self.assertNotEqual("1:30:1", history.getTimeStr())
     
     # getDateのテスト
     self.assertEqual("", history.getDate())

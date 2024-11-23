@@ -2,7 +2,7 @@ from racecourse import RaceCourse
 import re
 
 class History:
-  def __init__(self, racecourse, time, date, baba, parts, gate, last3F, jockey):
+  def __init__(self, racecourse, time, date="", baba="", parts="", gate="", last3F="", jockey=""):
     self.__racecourse = racecourse
     self.__time = time
     self.__date = date
