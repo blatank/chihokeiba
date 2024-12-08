@@ -22,6 +22,13 @@ class Race:
     self.__jockeys = []
     self.__reaceNo = ""
     self.__date = self.getDate(url)
+
+    # レースの前の1か月前の1日までにする
+    if self.__date.month <= 1 :
+      self.__c_date = datetime.datetime(self.__date.year - 1,self.__date.month + 12 - 1,1)
+    else:
+      self.__c_date = datetime.datetime(self.__date.year,self.__date.month - 1,1)
+
   
   def getDate(self, url):
     u1 = re.split(r'&', url)
@@ -156,9 +163,10 @@ class Race:
   def analyzeTime(self, racecourse):
     top_time = []
     nodata = ""
+
     # 該当データ検索
     for horse in self.__horses:
-      time = horse.getTopTimeInt(racecourse)
+      time = horse.getTopTimeInt(racecourse, self.__c_date)
       if time != 0:
         top_time.append(time)
       else:
@@ -182,14 +190,10 @@ class Race:
   def analyzeCondtion(self, racecourse):
     top_time = []
     nodata = ""
-    # レースの前の２か月前の1日までにする
-    if self.__date.month <= 2 :
-      c_date = datetime.datetime(self.__date.year - 1,self.__date.month + 12 - 2,1)
-    else:
-      c_date = datetime.datetime(self.__date.year,self.__date.month - 2,1)
+
     # 該当データ検索
     for horse in self.__horses:
-      time = horse.getTopTime(racecourse,c_date)
+      time = horse.getTopTime(racecourse, self.__c_date)
       if time != "":
         top_time.append(time + "-" + str(horse.getNo()))
       else:
@@ -407,7 +411,8 @@ class Race:
 
         # self.__keibajou[i].append(place)
         # self.__kyori[i].append(dis)
-        self.__horses[i].addHistory(RaceCourse(place, dis), time[i][j], date, baba, parts, gate, last3F[i][j], jockeys[i][j])
+        h1 = History(RaceCourse(place, dis), time[i][j], date, baba, parts, gate, last3F[i][j], jockeys[i][j])
+        self.__horses[i].addHistory(h1)
     
     # ここまで来れば正常終了
     return True

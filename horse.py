@@ -17,8 +17,9 @@ class Horse:
   def getPreviousJockey(self):
     return self.__histories[0].getJockey()
 
-  def addHistory(self, racecourse, time, date, baba, parts, gate, last3F, jockey):
-    self.__histories.append(History(racecourse, time, date, baba, parts, gate, last3F, jockey))
+  
+  def addHistory(self, history):
+    self.__histories.append(history)
 
   def getTopTime(self, racecourse, date = datetime.datetime(2000, 1, 1)):
     time = ""
@@ -32,14 +33,14 @@ class Horse:
 
     return time
   
-  def getTopTimeInt(self, racecourse):
+  def getTopTimeInt(self, racecourse, date = datetime.datetime(2000, 1, 1)):
     time = ""
     for history in self.__histories:
       if (history.hasHistory(racecourse)):
         t = history.getTime()
 
         #最初の履歴、またはより早い時計を見つけた場合
-        if (time == "" or time > t) and t != "":
+        if (time == "" or time > t) and t != "" and history.getDate() >= date:
           time = t
           h = history
 
