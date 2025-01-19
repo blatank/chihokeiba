@@ -22,9 +22,7 @@ class Race:
     self.__jockeys = []
     self.__reaceNo = ""
     self.__date = self.getDate(url)
-    # self.__periodflag = period
-    self.__periodflag = True
-
+    self.__periodflag = period
 
     # レースの前の1か月前の1日までにする
     if self.__periodflag == True:

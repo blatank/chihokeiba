@@ -24,9 +24,10 @@ class TestTkcalender(tk.Frame):
             data["year"] = dt_now.year
             data["month"] = dt_now.month
             data["day"] = dt_now.day
+            data["period"] = False
 
         self.pack()
-        self.master.title("tkカレンダーテスト")
+        self.master.title("地方競馬解析")
         self.master.geometry("400x200")
 
         label = tk.Label(master, text="競馬場")
@@ -56,8 +57,18 @@ class TestTkcalender(tk.Frame):
         self.data_entry_date.set_date(datetime.datetime(data["year"], data["month"], data["day"]))
         # self.data_entry_date.place()
 
+        label = tk.Label(master, text="　")
+        label.pack()
+
         button = tk.Button(master, text="開始", command=self.__do_keiba)
         button.pack()
+
+        # 絞り込み期間の変更
+        self.__chk = tk.BooleanVar()
+        self.__chk.set(data["period"])
+
+        chkbox = ttk.Checkbutton(master, variable=self.__chk, text='過去1か月前の1日までに絞り込む')
+        chkbox.pack()
 
         # 終了時に呼び出すイベントをバインド
         self.master.protocol("WM_DELETE_WINDOW", self.on_close)
@@ -73,7 +84,7 @@ class TestTkcalender(tk.Frame):
         sub_win = tk.Toplevel()
         text = tk.Text(sub_win, height=50)
         text.pack()
-        text.insert('1.0', Analyze.getResult(url))
+        text.insert('1.0', Analyze.getResult(url, self.__chk.get()))
     
     
     def on_close(self):
@@ -84,6 +95,7 @@ class TestTkcalender(tk.Frame):
         data["year"] = dt_now.year
         data["month"] = dt_now.month
         data["day"] = dt_now.day
+        data["period"] = self.__chk.get()
 
         with open('gui.json', 'w', encoding='utf-8') as f: 
             json.dump(data, f, ensure_ascii=False, indent=4)

@@ -2,9 +2,9 @@ from race import Race
 
 class Analyze:
   @classmethod
-  def getResult(cls, url):
+  def getResult(cls, url, period = False):
     result = ""
-    race = Race(url)
+    race = Race(url, period)
 
     if race.analyzeUrl():
       # レースと同じ条件の時計を出力
