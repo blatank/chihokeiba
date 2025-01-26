@@ -8,6 +8,7 @@ import subprocess
 import datetime
 import json
 import os
+import webbrowser
 
 class TestTkcalender(tk.Frame):
     def __init__(self,master):
@@ -83,27 +84,40 @@ class TestTkcalender(tk.Frame):
         button = tk.Button(master, text="開始", command=self.__do_keiba)
         button.pack()
 
+        jumpbutton = tk.Button(master, text="地方競馬サイトに飛ぶ", command=self.__jump)
+        jumpbutton.pack()
+
         # 終了時に呼び出すイベントをバインド
         self.master.protocol("WM_DELETE_WINDOW", self.on_close)
-
-    # 開始ボタンを押した際の処理
-    def __do_keiba(self):
+    
+    def __make_url(self):
         place = self.__place_txt.get()
         no = self.__no_txt.get()
         dt_now = self.data_entry_date.get_date()
         date = dt_now.strftime('%Y/%m/%d')
-        url = Url.getUrl(date, no, place)
+        return Url.getUrl(date, no, place)
+
+
+    # 開始ボタンを押した際の処理
+    def __do_keiba(self):
+        # place = self.__place_txt.get()
+        # no = self.__no_txt.get()
+        # dt_now = self.data_entry_date.get_date()
+        # date = dt_now.strftime('%Y/%m/%d')
+        # url = Url.getUrl(date, no, place)
 
         sub_win = tk.Toplevel()
         text = tk.Text(sub_win, height=50)
         text.pack()
         dt_start = self.data_entry_start.get_date()
-        text.insert('1.0', Analyze.getResult(url, self.__chk.get(),
+        text.insert('1.0', Analyze.getResult(self.__make_url(), self.__chk.get(),
                                              datetime.datetime(dt_start.year, dt_start.month, dt_start.day)))
         
     def __do_today(self):
         self.data_entry_date.set_date(datetime.datetime.now())
-    
+
+    def __jump(self):
+        webbrowser.open(self.__make_url())
     
     def on_close(self):
         data = {}
