@@ -1,10 +1,11 @@
 from race import Race
+import datetime
 
 class Analyze:
   @classmethod
-  def getResult(cls, url, period = False):
+  def getResult(cls, url, period = False, start = datetime.datetime(2000, 1, 1)):
     result = ""
-    race = Race(url, period)
+    race = Race(url, period, start)
 
     if race.analyzeUrl():
       # レースと同じ条件の時計を出力

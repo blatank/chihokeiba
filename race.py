@@ -14,7 +14,7 @@ from racecoursedictionary import RaceCourseDictionary
 
 
 class Race:
-  def __init__(self, url, period = False):
+  def __init__(self, url, period = False, start = datetime.datetime(2000, 1, 1)):
     self.__url = url
     self.__courses = []
     self.__distances = []
@@ -26,10 +26,11 @@ class Race:
 
     # レースの前の1か月前の1日までにする
     if self.__periodflag == True:
-      if self.__date.month <= 1 :
-        self.__c_date = datetime.datetime(self.__date.year - 1,self.__date.month + 12 - 1,1)
-      else:
-        self.__c_date = datetime.datetime(self.__date.year,self.__date.month - 1,1)
+      self.__c_date = start
+      # if self.__date.month <= 2 :
+      #   self.__c_date = datetime.datetime(self.__date.year - 1,self.__date.month + 12 - 2,1)
+      # else:
+      #   self.__c_date = datetime.datetime(self.__date.year,self.__date.month - 2,1)
     else:
       self.__c_date = datetime.datetime(2000, 1, 1)
 
