@@ -21,10 +21,10 @@ class Race:
     self.__horses = []
     self.__jockeys = []
     self.__reaceNo = ""
-    self.__date = self.getDate(url)
+    # self.__date = self.getDate(url)
     self.__periodflag = period
 
-    # レースの前の1か月前の1日までにする
+    # 指定した日付までをレースを検索対象にする
     if self.__periodflag == True:
       self.__c_date = start
       # if self.__date.month <= 2 :
@@ -36,11 +36,11 @@ class Race:
 
 
   
-  def getDate(self, url):
-    u1 = re.split(r'&', url)
-    u2 = re.split(r'k_raceDate=', u1[0])
-    u3 = re.split(r'/', u2[1])
-    return datetime.datetime(int(u3[0]),int(u3[1]),int(u3[2]))
+  # def getDate(self, url):
+  #   u1 = re.split(r'&', url)
+  #   u2 = re.split(r'k_raceDate=', u1[0])
+  #   u3 = re.split(r'%2f', u2[1])
+  #   return datetime.datetime(int(u3[0]),int(u3[1]),int(u3[2]))
 
   # データ抽出に使いたい競馬場をセットする
   def setCourse(self, course):
