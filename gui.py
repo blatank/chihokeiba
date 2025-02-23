@@ -32,7 +32,7 @@ class TestTkcalender(tk.Frame):
 
         self.pack()
         self.master.title("地方競馬解析")
-        self.master.geometry("400x300")
+        self.master.geometry("400x350")
 
         label = tk.Label(master, text="競馬場")
         label.pack()
@@ -84,6 +84,12 @@ class TestTkcalender(tk.Frame):
         button = tk.Button(master, text="開始", command=self.__do_keiba)
         button.pack()
 
+        button = tk.Button(master, text="全レースの結果出力", command=self.__all_race)
+        button.pack()
+
+        label = tk.Label(master, text="　")
+        label.pack()
+
         jumpbutton = tk.Button(master, text="地方競馬サイトに飛ぶ", command=self.__jump)
         jumpbutton.pack()
 
@@ -113,6 +119,23 @@ class TestTkcalender(tk.Frame):
         text.insert('1.0', Analyze.getResult(self.__make_url(), self.__chk.get(),
                                              datetime.datetime(dt_start.year, dt_start.month, dt_start.day)))
         
+    # 全レースの結果出力ボタンを押した際の処理
+    def __all_race(self):
+        sub_win = tk.Toplevel()
+        text = tk.Text(sub_win, height=50)
+        text.pack()
+        dt_start = self.data_entry_start.get_date()
+
+        i = 0
+        result = ''
+        with open("sample.txt", "a") as fileobj:
+            for i in range(12):
+                race = i + 1
+                self.__no_txt.set(race)
+                result += str(race) + 'レース目\n' + Analyze.getResult(self.__make_url(), 
+                            self.__chk.get(),datetime.datetime(dt_start.year, dt_start.month, dt_start.day)) + '\n\n'
+            fileobj.write(result)
+
     def __do_today(self):
         self.data_entry_date.set_date(datetime.datetime.now())
 
