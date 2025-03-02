@@ -4,6 +4,7 @@ from tkcalendar import Calendar, DateEntry
 from racecoursedictionary import RaceCourseDictionary
 import tkinter as tk
 import tkinter.ttk as ttk
+from tkinter import messagebox
 import subprocess
 import datetime
 import json
@@ -106,12 +107,6 @@ class TestTkcalender(tk.Frame):
 
     # 開始ボタンを押した際の処理
     def __do_keiba(self):
-        # place = self.__place_txt.get()
-        # no = self.__no_txt.get()
-        # dt_now = self.data_entry_date.get_date()
-        # date = dt_now.strftime('%Y/%m/%d')
-        # url = Url.getUrl(date, no, place)
-
         sub_win = tk.Toplevel()
         text = tk.Text(sub_win, height=50)
         text.pack()
@@ -121,20 +116,21 @@ class TestTkcalender(tk.Frame):
         
     # 全レースの結果出力ボタンを押した際の処理
     def __all_race(self):
-        sub_win = tk.Toplevel()
-        text = tk.Text(sub_win, height=50)
-        text.pack()
         dt_start = self.data_entry_start.get_date()
-
         i = 0
-        result = ''
-        with open("sample.txt", "a") as fileobj:
-            for i in range(12):
-                race = i + 1
+        dt_now = self.data_entry_date.get_date()
+        d = dt_now.strftime('%Y%m%d')
+        p = self.__place_txt.get()
+        for i in range(12):
+            result = ''
+            race = i + 1
+            filename = d + "_" + p + "_" + str(race) + ".txt"
+            with open("./OUTPUT/" + filename, "w", encoding='utf-8') as fileobj:
                 self.__no_txt.set(race)
-                result += str(race) + 'レース目\n' + Analyze.getResult(self.__make_url(), 
-                            self.__chk.get(),datetime.datetime(dt_start.year, dt_start.month, dt_start.day)) + '\n\n'
-            fileobj.write(result)
+                result += Analyze.getResult(self.__make_url(), 
+                            self.__chk.get(),datetime.datetime(dt_start.year, dt_start.month, dt_start.day))
+                fileobj.write(result)
+        messagebox.showinfo(title="結果", message="完了")
 
     def __do_today(self):
         self.data_entry_date.set_date(datetime.datetime.now())
