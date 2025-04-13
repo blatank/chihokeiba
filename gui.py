@@ -33,7 +33,7 @@ class TestTkcalender(tk.Frame):
 
         self.pack()
         self.master.title("地方競馬解析")
-        self.master.geometry("400x350")
+        self.master.geometry("400x400")
 
         label = tk.Label(master, text="競馬場")
         label.pack()
@@ -91,6 +91,11 @@ class TestTkcalender(tk.Frame):
         label = tk.Label(master, text="　")
         label.pack()
 
+        self.__urltxt = tk.Entry(master,text="　", width=50)
+        self.__urltxt.pack()
+        button = tk.Button(master, text="URLで解析", command=self.__url_analyze)
+        button.pack()
+
         jumpbutton = tk.Button(master, text="地方競馬サイトに飛ぶ", command=self.__jump)
         jumpbutton.pack()
 
@@ -107,12 +112,21 @@ class TestTkcalender(tk.Frame):
 
     # 開始ボタンを押した際の処理
     def __do_keiba(self):
+        self.__analyze(self.__make_url())
+
+    def __url_analyze(self):
+        self.__analyze(self.__urltxt.get())
+
+    # 解析処理
+    def __analyze(self,url):
         sub_win = tk.Toplevel()
         text = tk.Text(sub_win, height=50)
         text.pack()
         dt_start = self.data_entry_start.get_date()
-        text.insert('1.0', Analyze.getResult(self.__make_url(), self.__chk.get(),
+        text.insert('1.0', Analyze.getResult(url, self.__chk.get(),
                                              datetime.datetime(dt_start.year, dt_start.month, dt_start.day)))
+        
+    
         
     # 全レースの結果出力ボタンを押した際の処理
     def __all_race(self):
