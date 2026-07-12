@@ -317,6 +317,11 @@ class Race:
 
     # 過去のレース情報取得(時計用)
     history_table = soup.select("tbody > tr")
+    # # ファイルに文字列を書き込む
+    # with open("output.txt", "w", encoding="utf-8") as f:
+    #   for g in history_table:
+    #     f.write(str(g))
+
 
     # 走破時計保存用一時配列初期化(二次元配列で使用)
     time = []
@@ -337,15 +342,16 @@ class Race:
     # no = 1
     for jockey in jockeynames:
       st = re.split(r'\n',jockey.get_text())
-      st2 = re.split(r'（',st[1])
+      st2 = re.split(r'（',st[0])
       self.__jockeys.append(st2[0])
 
     #走破時計取り出し処理
     for i in range(len(self.__horses)):
+
       # TODO:何を目的としているかコメントに残す
-      t2 = re.split(r'</td>',str(history_table[i * 5 + 5]))
-      t4 = re.split(r'</td>',str(history_table[i * 5 + 4]))
-      
+      t2 = re.split(r'</td>',str(history_table[i * 11 + 11]))
+      t4 = re.split(r'</td>',str(history_table[i * 11 + 10]))
+
       # 馬柱に載っているのは過去5走
       # そのデータを分解し、Horseにセットする
       for j in range(5):
