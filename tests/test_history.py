@@ -13,7 +13,11 @@ class TestHistory(unittest.TestCase):
 
     def test_get_time_invalid(self):
         h = History(None, "bad", "21.07.15")
-        self.assertEqual(h.getTimeInt(), 0)
+        self.assertEqual(h.getTimeInt(), 9999)
+
+    def test_get_time_missing(self):
+        h = History(None, "", "21.07.15")
+        self.assertEqual(h.getTimeInt(), 9999)
 
     def test_get_time_format(self):
         h = History(None, "1:23.4", "21.07.15", "良", "外", "1", "36.5", "Taro")

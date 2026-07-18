@@ -38,11 +38,11 @@ class History:
   def getTimeInt(self):
     """内部で保持する時間整数値を返す。
 
-    形式が不正な場合は 0 を返します（ログに警告）。
+    形式が不正な場合は 9999 を返します（ログに警告）。
     単位は既存コードの互換を保ち、m*600 + s*10 の計算結果です。
     """
     if not self.__time:
-      return 0
+      return 9999
 
     splited_str = re.split(r':', self.__time)
     try:
@@ -51,7 +51,7 @@ class History:
       self.__timeInt = int(m + s)
     except Exception as e:
       logging.warning("history: failed to parse time '%s': %s", self.__time, e)
-      self.__timeInt = 0
+      self.__timeInt = 9999
 
     return self.__timeInt
 
