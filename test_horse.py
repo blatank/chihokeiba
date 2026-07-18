@@ -30,4 +30,17 @@ class TestHoese(unittest.TestCase):
     time = horse.getTopTime(saga1400, datetime.datetime(2024,12,2))
     self.assertEqual("1:31:0 [40.0]  (2024.12.02 良 1/12)", time)
 
+  def test_get_top_time_int_numeric(self):
+    horse = Horse("テスト馬", "1")
+    earlier = History(saga1400, "1:29.9", "24.12.01", "良", "12", "1", "40.0", "飛騨")
+    later = History(saga1400, "1:30:0", "24.12.02", "良", "12", "1", "40.0", "飛騨")
+    horse.addHistory(later)
+    horse.addHistory(earlier)
+
+    self.assertEqual(899, horse.getTopTimeInt(saga1400, datetime.datetime(2024, 12, 1)))
+
+  def test_previous_jockey_without_history(self):
+    horse = Horse("テスト馬", "1")
+    self.assertEqual("", horse.getPreviousJockey())
+
 

@@ -14,6 +14,8 @@ from racecoursedictionary import RaceCourseDictionary
 
 
 class Race:
+  NO_TIME = 9999
+
   def __init__(self, url, period = False, start = datetime.datetime(2000, 1, 1)):
     self.__url = url
     self.__courses = []
@@ -21,6 +23,7 @@ class Race:
     self.__horses = []
     self.__jockeys = []
     self.__reaceNo = ""
+    self.__raceCourse = None
     # self.__date = self.getDate(url)
     self.__periodflag = period
 
@@ -73,11 +76,12 @@ class Race:
     return results
   
   # 条件に近いデータの補正値を出力
-  def getAjustedTime(thisCourse, nearlyCourse):
+  @staticmethod
+  def getAdjustedTime(thisCourse, nearlyCourse):
     ajustedTime = 0
 
     # 今のコースのファイルを読み出す
-    datafile = "data/" + thisCourse.getCourse() + "_" + thisCourse.getDistance() + ".txt"
+    datafile = os.path.join("data", f"{thisCourse.getCourse()}_{thisCourse.getDistance()}.txt")
     if os.path.isfile(datafile):
       with open(datafile, encoding='UTF-8') as f:
         reader = csv.reader(f)
@@ -92,6 +96,8 @@ class Race:
             break
 
     return ajustedTime
+
+  getAjustedTime = getAdjustedTime
   
   def analyzeEsitimateTime(self):
     top_time = []
@@ -168,17 +174,13 @@ class Race:
   
   def analyzeTime(self, racecourse):
     top_time = []
-    nodata = ""
 
     # 該当データ検索
     for horse in self.__horses:
-      time = horse.getTopTimeInt(racecourse, self.__c_date)
-      if time != 0:
-        top_time.append(time)
-      else:
-        top_time.append(0)
+      top_time.append(horse.getTopTimeInt(racecourse, self.__c_date))
     return top_time
   
+  @staticmethod
   def convTime(time):
     m = int(time / 600)
     s = int((time - (m * 600)) / 10)

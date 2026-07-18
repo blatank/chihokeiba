@@ -44,11 +44,19 @@ class History:
     if not self.__time:
       return 9999
 
-    splited_str = re.split(r':', self.__time)
     try:
-      m = int(splited_str[0]) * 600
-      s = float(splited_str[1]) * 10
-      self.__timeInt = int(m + s)
+      parts = self.__time.split(":")
+      if len(parts) == 2:
+        minutes = int(parts[0])
+        seconds = float(parts[1])
+      elif len(parts) == 3:
+        minutes = int(parts[0])
+        seconds = int(parts[1])
+        seconds += int(parts[2]) / 10.0
+      else:
+        raise ValueError("unsupported time format")
+
+      self.__timeInt = int(minutes * 600 + seconds * 10)
     except Exception as e:
       logging.warning("history: failed to parse time '%s': %s", self.__time, e)
       self.__timeInt = 9999

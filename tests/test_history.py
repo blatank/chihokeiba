@@ -11,6 +11,10 @@ class TestHistory(unittest.TestCase):
         h = History(None, "1:23.4", "21.07.15")
         self.assertEqual(h.getTimeInt(), 834)
 
+    def test_get_time_int_colon_colon(self):
+        h = History(None, "1:30:0", "21.07.15")
+        self.assertEqual(h.getTimeInt(), 900)
+
     def test_get_time_invalid(self):
         h = History(None, "bad", "21.07.15")
         self.assertEqual(h.getTimeInt(), 9999)
