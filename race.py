@@ -290,6 +290,9 @@ class Race:
     else:
       distance = "左" + race_info[0]
 
+    if(zenkaku_splitted[0] == "<li>芝"):
+      distance = "芝" + distance
+
     # URL自体からレース情報の解析
     url = urlparse(self.__url)
     query = re.split(r'&',url.query)

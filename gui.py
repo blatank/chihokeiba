@@ -125,8 +125,7 @@ class TestTkcalender(tk.Frame):
         dt_start = self.data_entry_start.get_date()
         text.insert('1.0', Analyze.getResult(url, self.__chk.get(),
                                              datetime.datetime(dt_start.year, dt_start.month, dt_start.day)))
-        
-    
+
         
     # 全レースの結果出力ボタンを押した際の処理
     def __all_race(self):
@@ -182,4 +181,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
