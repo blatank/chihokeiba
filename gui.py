@@ -1,5 +1,6 @@
 from url import Url
 from analyze import Analyze
+from race import Race
 from tkcalendar import Calendar, DateEntry
 from racecoursedictionary import RaceCourseDictionary
 import tkinter as tk
@@ -91,6 +92,12 @@ class TestTkcalender(tk.Frame):
         label = tk.Label(master, text="　")
         label.pack()
 
+        button = tk.Button(master, text="週ごとの分析", command=self.__weekly_analyze)
+        button.pack()
+
+        label = tk.Label(master, text="　")
+        label.pack()
+
         self.__urltxt = tk.Entry(master,text="　", width=50)
         self.__urltxt.pack()
         button = tk.Button(master, text="URLで解析", command=self.__url_analyze)
@@ -144,6 +151,24 @@ class TestTkcalender(tk.Frame):
                             self.__chk.get(),datetime.datetime(dt_start.year, dt_start.month, dt_start.day))
                 fileobj.write(result)
         messagebox.showinfo(title="結果", message="完了")
+
+    def __weekly_analyze(self):
+        """週ごとの分析結果を表示"""
+        sub_win = tk.Toplevel()
+        text = tk.Text(sub_win, height=50)
+        text.pack()
+        
+        race = Race(self.__make_url(), self.__chk.get(),
+                    datetime.datetime(self.data_entry_start.get_date().year, 
+                                    self.data_entry_start.get_date().month, 
+                                    self.data_entry_start.get_date().day))
+        
+        if race.analyzeUrl():
+            result = race.analyzeByWeek(num_weeks=12)
+            text.insert('1.0', result)
+        else:
+            text.insert('1.0', "URLの解析に失敗しました")
+
 
     def __do_today(self):
         self.data_entry_date.set_date(datetime.datetime.now())

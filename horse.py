@@ -43,3 +43,41 @@ class Horse:
           best = time
 
     return best
+  
+  def getTopTimeByWeek(self, racecourse, week_start, week_end):
+    """指定した週の期間内で最速タイムを取得
+    
+    :param racecourse: RaceCourseオブジェクト
+    :param week_start: 週の開始日時（日曜日）
+    :param week_end: 週の終了日時（土曜日）
+    :return: (タイム文字列, タイム整数値) のタプル、データなしの場合は ("", 9999)
+    """
+    best_history = None
+    best_time = 9999
+    for history in self.__histories:
+      if history.hasHistory(racecourse) and week_start <= history.getDate() <= week_end:
+        time_int = history.getTimeInt()
+        if time_int < best_time:
+          best_time = time_int
+          best_history = history
+    
+    if best_history:
+      return best_history.getTime(), best_time
+    return "", 9999
+  
+  def getTopTimeIntByWeek(self, racecourse, week_start, week_end):
+    """指定した週の期間内で最速タイム（整数値）を取得
+    
+    :param racecourse: RaceCourseオブジェクト
+    :param week_start: 週の開始日時（日曜日）
+    :param week_end: 週の終了日時（土曜日）
+    :return: タイム整数値、データなしの場合は 9999
+    """
+    best = 9999
+    for history in self.__histories:
+      if history.hasHistory(racecourse) and week_start <= history.getDate() <= week_end:
+        time = history.getTimeInt()
+        if time < best:
+          best = time
+    
+    return best

@@ -75,6 +75,109 @@ class Race:
     
     return results
   
+  def analyzeByWeek(self, num_weeks=12):
+    """週ごとに分析結果を出力
+    
+    :param num_weeks: 遡って分析する週数（デフォルト: 12週=約3ヶ月）
+    :return: 週ごとの分析結果を含む文字列
+    """
+    result = ""
+
+    # 現在から遡る週数分の期間を計算
+    weeks_data = []
+    today = datetime.datetime.now()
+
+    # 参照週の月曜日を取得（today の週の月曜日）
+    reference_monday = today - datetime.timedelta(days=today.weekday())
+    for week_num in range(num_weeks):
+      # week_num 週前の週（月〜日）を計算
+      week_start = reference_monday - datetime.timedelta(weeks=week_num)
+      week_end = week_start + datetime.timedelta(days=6)
+      weeks_data.append((week_num, week_start, week_end))
+
+    # 古い順に処理
+    weeks_data.reverse()
+
+    # 各週の分析を実施（補正後のタイムで比較）
+    for week_num, week_start, week_end in weeks_data:
+      result += f"\n{'='*50}\n"
+      result += f"週{week_num + 1}の分析 ({week_start.strftime('%Y.%m.%d')} ～ {week_end.strftime('%Y.%m.%d')})\n"
+      result += f"{'='*50}\n"
+
+      # 各コース（本コース + 類似コース）ごとの週内最速タイム（整数値）を収集
+      top_time_matrix = []  # [コース索引][馬索引] = time_int
+
+      # 本コースの週内最速タイム
+      this_week_times = []
+      for horse in self.__horses:
+        this_week_times.append(horse.getTopTimeIntByWeek(self.__raceCourse, week_start, week_end))
+      top_time_matrix.append(this_week_times)
+
+      # 類似コースの週内最速タイム
+      nearlyRaces = self.__raceCourse.esitimateCourse()
+      for nr in nearlyRaces:
+        times_nearly = []
+        for horse in self.__horses:
+          times_nearly.append(horse.getTopTimeIntByWeek(nr, week_start, week_end))
+        top_time_matrix.append(times_nearly)
+
+      # 馬ごとに補正を適用して最速タイムを選定
+      tops = []
+      nodata = ""
+      for i, horse in enumerate(self.__horses):
+        # 類似コースに対して補正を適用
+        for k in range(1, len(top_time_matrix)):
+          if top_time_matrix[k][i] != Race.NO_TIME:
+            adj = Race.getAjustedTime(self.__raceCourse, nearlyRaces[k-1])
+            top_time_matrix[k][i] += adj
+
+        # 最小値を探す
+        t = Race.NO_TIME
+        for j in range(len(top_time_matrix)):
+          if top_time_matrix[j][i] < t:
+            t = top_time_matrix[j][i]
+
+        if t != Race.NO_TIME:
+          tops.append(Race.convTime(t) + "-" + str(horse.getNo()))
+        else:
+          nodata += " " + str(horse.getNo()) + "番"
+
+      tops.sort()
+
+      # 出力整形（最速との差分表示など）
+      i = 0
+      j = 0
+      if len(tops) == 0:
+        result += "この週のデータがありません\n"
+      else:
+        fast = None
+        for time_str in tops:
+          r = self._formattedTimeStr(time_str)
+
+          time_only = re.sub(r'-\d+', '', time_str)
+          r = re.sub(r'\n', '', r)
+
+          splited_str = re.split(r':', time_only)
+          m = int(splited_str[0]) * 600
+          s = float(splited_str[1]) * 10
+          t_int = int(m + s)
+
+          if i == 0:
+            fast = t_int
+          diff = t_int - fast
+
+          if diff > 10 and j == 0:
+            result += "*******************************\n"
+            j = 1
+
+          result += r + " (+" + Race.convTime(diff) + ")\n"
+          i += 1
+
+      if len(nodata) > 0:
+        result += "\nデータなし:" + nodata + "\n"
+
+    return result
+  
   # 条件に近いデータの補正値を出力
   @staticmethod
   def getAdjustedTime(thisCourse, nearlyCourse):
