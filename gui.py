@@ -158,13 +158,17 @@ class TestTkcalender(tk.Frame):
         text = tk.Text(sub_win, height=50)
         text.pack()
         
+        dt_start = self.data_entry_start.get_date()
+        dt_end = self.data_entry_date.get_date()
         race = Race(self.__make_url(), self.__chk.get(),
-                    datetime.datetime(self.data_entry_start.get_date().year, 
-                                    self.data_entry_start.get_date().month, 
-                                    self.data_entry_start.get_date().day))
+                    datetime.datetime(dt_start.year, dt_start.month, dt_start.day))
         
         if race.analyzeUrl():
-            result = race.analyzeByWeek(num_weeks=12)
+            result = race.analyzeByWeek(
+                num_weeks=12,
+                start_date=datetime.datetime(dt_start.year, dt_start.month, dt_start.day),
+                end_date=datetime.datetime(dt_end.year, dt_end.month, dt_end.day)
+            )
             text.insert('1.0', result)
         else:
             text.insert('1.0', "URLの解析に失敗しました")

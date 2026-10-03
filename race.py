@@ -75,25 +75,42 @@ class Race:
     
     return results
   
-  def analyzeByWeek(self, num_weeks=12):
+  def analyzeByWeek(self, num_weeks=12, start_date=None, end_date=None):
     """週ごとに分析結果を出力
     
-    :param num_weeks: 遡って分析する週数（デフォルト: 12週=約3ヶ月）
+    :param num_weeks: start_date が未指定のときのみ使う週数
+    :param start_date: 分析開始日（含む）
+    :param end_date: 分析終了日（含む、未指定時は現在日）
     :return: 週ごとの分析結果を含む文字列
     """
     result = ""
 
-    # 現在から遡る週数分の期間を計算
-    weeks_data = []
-    today = datetime.datetime.now()
+    # 終了日は現在日またはレース日を使う
+    if end_date is None:
+      end_date = datetime.datetime.now()
+    elif isinstance(end_date, datetime.date) and not isinstance(end_date, datetime.datetime):
+      end_date = datetime.datetime.combine(end_date, datetime.time.min)
 
-    # 参照週の月曜日を取得（today の週の月曜日）
-    reference_monday = today - datetime.timedelta(days=today.weekday())
-    for week_num in range(num_weeks):
-      # week_num 週前の週（月〜日）を計算
+    if start_date is None:
+      start_date = end_date - datetime.timedelta(weeks=num_weeks)
+    elif isinstance(start_date, datetime.date) and not isinstance(start_date, datetime.datetime):
+      start_date = datetime.datetime.combine(start_date, datetime.time.min)
+
+    if start_date > end_date:
+      start_date, end_date = end_date, start_date
+
+    # 開始日から終了日までの週を列挙
+    weeks_data = []
+    reference_monday = end_date - datetime.timedelta(days=end_date.weekday())
+    week_num = 0
+    while True:
       week_start = reference_monday - datetime.timedelta(weeks=week_num)
       week_end = week_start + datetime.timedelta(days=6)
-      weeks_data.append((week_num, week_start, week_end))
+      if week_end < start_date:
+        break
+      if week_start <= end_date:
+        weeks_data.append((week_num, week_start, week_end))
+      week_num += 1
 
     # 古い順に処理
     weeks_data.reverse()
